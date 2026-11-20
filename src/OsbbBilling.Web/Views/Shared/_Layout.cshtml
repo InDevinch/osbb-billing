@@ -1,4 +1,5 @@
 @inject IWebHostEnvironment Environment
+@using OsbbBilling.Web.Security
 <!DOCTYPE html>
 <html lang="uk">
 <head>
@@ -12,9 +13,17 @@
     <header class="border-bottom mb-4">
         <nav class="container d-flex flex-wrap align-items-center gap-3 py-3" aria-label="Головна навігація">
             <a class="navbar-brand fw-bold" asp-controller="Home" asp-action="Index">ОСББ · Облік послуг</a>
-            @if (Environment.IsDevelopment())
+            @if (User.Identity?.IsAuthenticated == true)
             {
-                <a asp-controller="Development" asp-action="Database">Перевірка БД</a>
+                <a asp-controller="Workspace" asp-action="Index">Мій кабінет</a>
+                @if (Environment.IsDevelopment() && User.IsInRole(Roles.Accountant))
+                {
+                    <a asp-controller="Development" asp-action="Database">Перевірка БД</a>
+                }
+                <span class="ms-auto">@User.Identity.Name</span>
+                <form asp-controller="Account" asp-action="Logout" method="post">
+                    <button class="btn btn-outline-secondary btn-sm" type="submit">Вийти</button>
+                </form>
             }
         </nav>
     </header>

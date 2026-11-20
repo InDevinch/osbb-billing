@@ -1,4 +1,5 @@
 @inject IWebHostEnvironment Environment
+@using OsbbBilling.Web.Security
 @{
     ViewData["Title"] = "Головна";
 }
@@ -8,7 +9,8 @@
     <p class="lead">Облік приміщень, особових рахунків, послуг і розрахунків із мешканцями.</p>
     <div class="alert alert-info">Доступна перевірка підключення до бази даних. Облік нарахувань і оплат у розробці.</div>
 </section>
-@if (Environment.IsDevelopment())
+<a class="btn btn-primary" asp-controller="Workspace" asp-action="Index">Мій кабінет</a>
+@if (Environment.IsDevelopment() && User.IsInRole(Roles.Accountant))
 {
     <a class="btn btn-primary mt-4" asp-controller="Development" asp-action="Database">Перевірити підключення до БД</a>
 }

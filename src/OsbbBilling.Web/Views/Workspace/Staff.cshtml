@@ -1,0 +1,8 @@
+@using OsbbBilling.Web.Security
+@using System.Security.Claims
+@{
+    var roleName = Roles.DisplayName(User.FindFirstValue(ClaimTypes.Role));
+    ViewData["Title"] = roleName;
+}
+<h1>Кабінет: @roleName</h1>
+<p>Ви увійшли як <strong>@User.Identity?.Name</strong>.</p>

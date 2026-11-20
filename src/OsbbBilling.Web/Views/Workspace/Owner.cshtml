@@ -1,0 +1,29 @@
+@model IReadOnlyList<OwnerAccountViewModel>
+@{
+    ViewData["Title"] = "Мої рахунки";
+}
+<h1>Мої особові рахунки</h1>
+@if (Model.Count == 0)
+{
+    <p>До вашого облікового запису ще не прив’язано особових рахунків.</p>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table">
+            <thead><tr><th scope="col">Рахунок</th><th scope="col">Адреса</th><th scope="col">Приміщення</th><th scope="col">Діє з</th><th scope="col">Діє до</th></tr></thead>
+            <tbody>
+            @foreach (var account in Model)
+            {
+                <tr>
+                    <td>@account.AccountNumber</td>
+                    <td>@account.Address</td>
+                    <td>@account.PremiseNumber</td>
+                    <td>@account.ValidFrom.ToString("dd.MM.yyyy")</td>
+                    <td>@(account.ValidTo?.ToString("dd.MM.yyyy") ?? "—")</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+}

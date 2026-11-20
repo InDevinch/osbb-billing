@@ -1,0 +1,13 @@
+@{
+    ViewData["Title"] = "Доступ заборонено";
+}
+<h1>Доступ заборонено</h1>
+<p>Ваш обліковий запис не має доступу до цього розділу.</p>
+@if (User.Identity?.IsAuthenticated == true)
+{
+    <a asp-controller="Workspace" asp-action="Index">До свого кабінету</a>
+}
+else
+{
+    <a asp-controller="Account" asp-action="Login">Увійти</a>
+}
