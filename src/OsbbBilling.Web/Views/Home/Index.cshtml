@@ -1,0 +1,14 @@
+@inject IWebHostEnvironment Environment
+@{
+    ViewData["Title"] = "Головна";
+}
+<section class="py-4">
+    <p class="text-secondary">Система обліку ОСББ</p>
+    <h1>Нарахування та оплата послуг</h1>
+    <p class="lead">Облік приміщень, особових рахунків, послуг і розрахунків із мешканцями.</p>
+    <div class="alert alert-info">Доступна перевірка підключення до бази даних. Облік нарахувань і оплат у розробці.</div>
+</section>
+@if (Environment.IsDevelopment())
+{
+    <a class="btn btn-primary mt-4" asp-controller="Development" asp-action="Database">Перевірити підключення до БД</a>
+}

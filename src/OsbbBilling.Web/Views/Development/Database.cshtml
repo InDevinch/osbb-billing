@@ -1,0 +1,17 @@
+@model DatabaseStatusViewModel
+@{
+    ViewData["Title"] = "Перевірка БД";
+}
+<h1>Перевірка бази даних</h1>
+<p>Сторінка доступна лише в середовищі Development. Запит читає кількість об’єктів у підключеній базі.</p>
+<div class="alert @(Model.IsConnected ? "alert-success" : "alert-warning")" role="status">@Model.Message</div>
+@if (Model.IsConnected)
+{
+    <dl class="row">
+        <dt class="col-sm-3">Таблиці</dt><dd class="col-sm-9">@Model.TableCount</dd>
+        <dt class="col-sm-3">Представлення</dt><dd class="col-sm-9">@Model.ViewCount</dd>
+        <dt class="col-sm-3">Процедури</dt><dd class="col-sm-9">@Model.ProcedureCount</dd>
+    </dl>
+    <p class="text-secondary">Для бази зі скрипта очікується 13 таблиць, 3 представлення та 3 процедури. Це не замінює перевірку цілісності SQL-скриптом.</p>
+}
+<a asp-controller="Home" asp-action="Index">На головну</a>

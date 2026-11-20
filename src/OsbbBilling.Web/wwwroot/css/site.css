@@ -1,0 +1,6 @@
+html { font-size: 16px; }
+body { color: #243044; background: #f8fafc; }
+main { min-height: 70vh; }
+h1 { max-width: 850px; margin-bottom: 1rem; }
+a { text-underline-offset: 3px; }
+.btn:focus-visible, a:focus-visible { outline: 3px solid #164fbd; outline-offset: 3px; }

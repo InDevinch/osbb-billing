@@ -1,0 +1,25 @@
+@inject IWebHostEnvironment Environment
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] — ОСББ</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    <header class="border-bottom mb-4">
+        <nav class="container d-flex flex-wrap align-items-center gap-3 py-3" aria-label="Головна навігація">
+            <a class="navbar-brand fw-bold" asp-controller="Home" asp-action="Index">ОСББ · Облік послуг</a>
+            @if (Environment.IsDevelopment())
+            {
+                <a asp-controller="Development" asp-action="Database">Перевірка БД</a>
+            }
+        </nav>
+    </header>
+    <main class="container pb-5">@RenderBody()</main>
+    <footer class="container border-top py-3 text-secondary">Навчальний проєкт · ОСББ</footer>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
