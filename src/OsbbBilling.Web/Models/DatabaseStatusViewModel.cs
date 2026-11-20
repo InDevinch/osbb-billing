@@ -7,4 +7,5 @@ public class DatabaseStatusViewModel
     public int TableCount { get; init; }
     public int ViewCount { get; init; }
     public int ProcedureCount { get; init; }
+    public IReadOnlyDictionary<string, int> EntityCounts { get; init; } = new Dictionary<string, int>();
 }

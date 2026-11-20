@@ -13,5 +13,15 @@
         <dt class="col-sm-3">Процедури</dt><dd class="col-sm-9">@Model.ProcedureCount</dd>
     </dl>
     <p class="text-secondary">Для бази зі скрипта очікується 13 таблиць, 3 представлення та 3 процедури. Це не замінює перевірку цілісності SQL-скриптом.</p>
+    <h2 class="h4">Читання через EF Core</h2>
+    <table class="table table-sm">
+        <thead><tr><th scope="col">Таблиця</th><th scope="col">Кількість записів</th></tr></thead>
+        <tbody>
+        @foreach (var entity in Model.EntityCounts)
+        {
+            <tr><td>@entity.Key</td><td>@entity.Value</td></tr>
+        }
+        </tbody>
+    </table>
 }
 <a asp-controller="Home" asp-action="Index">На головну</a>

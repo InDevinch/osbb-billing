@@ -2,9 +2,9 @@
 
 Курсова робота: вебзастосунок для обліку послуг ОСББ, нарахувань і платежів мешканців.
 
-Технології: C#, ASP.NET Core MVC (.NET 10), SQL Server, Bootstrap.
+Технології: C#, ASP.NET Core MVC (.NET 10), Entity Framework Core, SQL Server, Bootstrap.
 
-Поки реалізовано початкову структуру застосунку та перевірку підключення до БД. Облік і авторизація ще в розробці.
+Додано моделі 13 таблиць, DbContext і перевірку читання даних. Облік через форми й авторизація ще в розробці.
 
 ## Запуск
 
@@ -28,5 +28,16 @@ dotnet run --project src/OsbbBilling.Web --launch-profile http
 
 - `src/OsbbBilling.Web` — MVC-застосунок.
 - `database` — структура БД, тестові дані, приклади операцій і перевірки.
+- `tests/OsbbBilling.Tests` — перевірки моделі та читання БД.
 
 `03_Demonstration.sql` виконує операції з даними, а `04_Verification.sql` перевіряє правила БД. Використовуйте їх у тестовій базі. Застосунок самостійно не створює та не змінює схему БД.
+
+## Перевірки
+
+Без SQL Server:
+
+```powershell
+dotnet test --filter "Category!=Integration"
+```
+
+Для перевірки відповідності моделі наявній БД та читання всіх таблиць задайте локальну змінну `OSBB_TEST_CONNECTION_STRING` і виконайте `dotnet test --filter "Category=Integration"`. Ці тести виконують лише запити читання.
