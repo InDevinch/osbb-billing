@@ -19,6 +19,8 @@
                 @if (User.IsInRole(Roles.Accountant) || User.IsInRole(Roles.Chairperson))
                 {
                     <a asp-controller="Owners" asp-action="Index">Власники</a>
+                    <a asp-controller="Buildings" asp-action="Index">Будинки</a>
+                    <a asp-controller="Premises" asp-action="Index">Приміщення</a>
                 }
                 @if (Environment.IsDevelopment() && User.IsInRole(Roles.Accountant))
                 {

@@ -1,0 +1,69 @@
+@model BuildingListViewModel
+@using OsbbBilling.Web.Security
+@{
+    ViewData["Title"] = "Будинки";
+    var canEdit = User.IsInRole(Roles.Accountant);
+}
+@if (TempData["Success"] is string message)
+{
+    <div class="alert alert-success" role="status">@message</div>
+}
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+    <h1 class="mb-0">Будинки</h1>
+    @if (canEdit)
+    {
+        <a class="btn btn-primary" asp-action="Create">Додати будинок</a>
+    }
+</div>
+<form asp-action="Index" method="get" class="d-flex flex-wrap gap-2 mb-3">
+    <label for="search" class="visually-hidden">Пошук за адресою</label>
+    <input id="search" name="search" value="@Model.Search" class="form-control" type="search"
+           placeholder="Адреса будинку" style="max-width: 440px" />
+    <button class="btn btn-outline-primary" type="submit">Знайти</button>
+    @if (!string.IsNullOrEmpty(Model.Search))
+    {
+        <a class="btn btn-outline-secondary" asp-action="Index">Скинути</a>
+    }
+</form>
+<p class="text-secondary">Знайдено: @Model.TotalCount</p>
+@if (Model.Buildings.Count == 0)
+{
+    <p>Будинків не знайдено.</p>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead><tr><th scope="col">Адреса</th><th scope="col">Приміщень</th><th scope="col">Дії</th></tr></thead>
+            <tbody>
+            @foreach (var building in Model.Buildings)
+            {
+                <tr>
+                    <td><a asp-controller="Premises" asp-action="Index" asp-route-buildingId="@building.BuildingId">@building.Address</a></td>
+                    <td>@building.PremiseCount</td>
+                    <td>
+                        @if (canEdit)
+                        {
+                            <a asp-action="Edit" asp-route-id="@building.BuildingId">Редагувати</a>
+                        }
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+}
+@if (Model.TotalPages > 1)
+{
+    <nav aria-label="Сторінки будинків" class="d-flex gap-3">
+        @if (Model.Page > 1)
+        {
+            <a asp-action="Index" asp-route-search="@Model.Search" asp-route-page="@(Model.Page - 1)">Назад</a>
+        }
+        <span>Сторінка @Model.Page з @Model.TotalPages</span>
+        @if (Model.Page < Model.TotalPages)
+        {
+            <a asp-action="Index" asp-route-search="@Model.Search" asp-route-page="@(Model.Page + 1)">Далі</a>
+        }
+    </nav>
+}

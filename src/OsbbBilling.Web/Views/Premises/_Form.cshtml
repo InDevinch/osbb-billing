@@ -1,0 +1,39 @@
+@model PremiseFormViewModel
+<div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+<div class="mb-3">
+    <label asp-for="BuildingId" class="form-label"></label>
+    <select asp-for="BuildingId" asp-items="Model.Buildings" class="form-select" disabled="@Model.HasHistory">
+        <option value="">Оберіть будинок</option>
+    </select>
+    @if (Model.HasHistory)
+    {
+        <input asp-for="BuildingId" type="hidden" />
+        <p class="form-text">Будинок не можна змінити: до приміщення прив’язані рахунки або послуги.</p>
+    }
+    <span asp-validation-for="BuildingId" class="text-danger"></span>
+</div>
+<div class="mb-3">
+    <label asp-for="Number" class="form-label"></label>
+    <input asp-for="Number" class="form-control" maxlength="20" required />
+    <span asp-validation-for="Number" class="text-danger"></span>
+</div>
+<div class="mb-3">
+    <label asp-for="Kind" class="form-label"></label>
+    <select asp-for="Kind" class="form-select">
+        <option value="@PremiseKinds.Apartment">Квартира</option>
+        <option value="@PremiseKinds.Nonres">Нежитлове приміщення</option>
+    </select>
+    <span asp-validation-for="Kind" class="text-danger"></span>
+</div>
+<div class="mb-3">
+    <label asp-for="Area" class="form-label"></label>
+    <input asp-for="Area" class="form-control" type="number" min="0.01" max="99999999.99" step="0.01" required />
+    <span asp-validation-for="Area" class="text-danger"></span>
+</div>
+<div class="mb-3">
+    <label asp-for="ResidentsCount" class="form-label"></label>
+    <input asp-for="ResidentsCount" class="form-control" type="number" min="0" max="32767" step="1" required />
+    <span asp-validation-for="ResidentsCount" class="text-danger"></span>
+</div>
+<button class="btn btn-primary" type="submit">Зберегти</button>
+<a class="btn btn-outline-secondary" asp-action="Index">Скасувати</a>

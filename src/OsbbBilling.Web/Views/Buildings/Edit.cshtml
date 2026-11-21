@@ -1,0 +1,8 @@
+@model BuildingFormViewModel
+@{
+    ViewData["Title"] = "Редагувати будинок";
+}
+<h1>Редагувати будинок</h1>
+<form asp-action="Edit" asp-route-id="@ViewContext.RouteData.Values["id"]" method="post" style="max-width: 640px">
+    <partial name="_Form" model="Model" />
+</form>

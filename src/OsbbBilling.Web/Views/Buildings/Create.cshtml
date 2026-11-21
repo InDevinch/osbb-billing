@@ -1,0 +1,8 @@
+@model BuildingFormViewModel
+@{
+    ViewData["Title"] = "Додати будинок";
+}
+<h1>Додати будинок</h1>
+<form asp-action="Create" method="post" style="max-width: 640px">
+    <partial name="_Form" model="Model" />
+</form>

@@ -1,0 +1,44 @@
+@model OsbbBilling.Web.Models.Entities.Premise
+@using OsbbBilling.Web.Security
+@{
+    ViewData["Title"] = "Приміщення " + Model.Number;
+}
+@if (TempData["Success"] is string message)
+{
+    <div class="alert alert-success" role="status">@message</div>
+}
+<h1>Приміщення @Model.Number</h1>
+<dl class="row">
+    <dt class="col-sm-3">Будинок</dt><dd class="col-sm-9">@Model.Building.Address</dd>
+    <dt class="col-sm-3">Тип</dt><dd class="col-sm-9">@PremiseKinds.DisplayName(Model.Kind)</dd>
+    <dt class="col-sm-3">Площа</dt><dd class="col-sm-9">@Model.Area.ToString("0.00") м²</dd>
+    <dt class="col-sm-3">Кількість мешканців</dt><dd class="col-sm-9">@Model.ResidentsCount</dd>
+</dl>
+@if (User.IsInRole(Roles.Accountant))
+{
+    <a class="btn btn-primary mb-3" asp-action="Edit" asp-route-id="@Model.PremiseId">Редагувати</a>
+}
+<h2 class="h4">Особові рахунки</h2>
+@if (Model.Accounts.Count == 0)
+{
+    <p>Особових рахунків ще немає.</p>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table">
+            <thead><tr><th scope="col">Рахунок</th><th scope="col">Платник</th><th scope="col">Діє з</th><th scope="col">Діє до</th></tr></thead>
+            <tbody>
+            @foreach (var account in Model.Accounts.OrderBy(x => x.ValidFrom))
+            {
+                <tr>
+                    <td>@account.AccountNumber</td>
+                    <td><a asp-controller="Owners" asp-action="Details" asp-route-id="@account.OwnerId">@account.Owner.FullName</a></td>
+                    <td>@account.ValidFrom.ToString("dd.MM.yyyy")</td><td>@(account.ValidTo?.ToString("dd.MM.yyyy") ?? "—")</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+}
+<a asp-action="Index" asp-route-buildingId="@Model.BuildingId">До списку приміщень</a>

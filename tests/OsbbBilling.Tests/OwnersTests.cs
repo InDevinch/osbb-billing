@@ -9,13 +9,6 @@ namespace OsbbBilling.Tests;
 
 public class OwnersTests
 {
-    private static async Task<HttpResponseMessage> SubmitAsync(HttpClient client, string path,
-        Dictionary<string, string> fields)
-    {
-        fields["__RequestVerificationToken"] = await TokenAsync(client, path);
-        return await client.PostAsync(path, new FormUrlEncodedContent(fields));
-    }
-
     private static async Task<Owner> ReadOwnerAsync(AuthWebApplicationFactory factory, int id)
     {
         using var scope = factory.Services.CreateScope();

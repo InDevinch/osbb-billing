@@ -1,0 +1,16 @@
+@model PremiseFormViewModel
+@{
+    ViewData["Title"] = "Додати приміщення";
+}
+<h1>Додати приміщення</h1>
+@if (Model.Buildings.Count == 0)
+{
+    <p>Спочатку додайте будинок.</p>
+    <a class="btn btn-primary" asp-controller="Buildings" asp-action="Create">Додати будинок</a>
+}
+else
+{
+    <form asp-action="Create" method="post" style="max-width: 640px">
+        <partial name="_Form" model="Model" />
+    </form>
+}
