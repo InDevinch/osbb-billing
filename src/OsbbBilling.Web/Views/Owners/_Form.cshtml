@@ -1,0 +1,20 @@
+@model OwnerFormViewModel
+<div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+<div class="mb-3">
+    <label asp-for="FullName" class="form-label"></label>
+    <input asp-for="FullName" class="form-control" autocomplete="name" maxlength="150" required />
+    <span asp-validation-for="FullName" class="text-danger"></span>
+</div>
+<div class="mb-3">
+    <label asp-for="Phone" class="form-label"></label>
+    <input asp-for="Phone" class="form-control" type="tel" autocomplete="tel" maxlength="30" />
+    <span asp-validation-for="Phone" class="text-danger"></span>
+</div>
+<div class="mb-3">
+    <label asp-for="Email" class="form-label"></label>
+    <input asp-for="Email" class="form-control" type="email" autocomplete="email" maxlength="254" />
+    <span asp-validation-for="Email" class="text-danger"></span>
+</div>
+<p class="text-secondary">Телефон та електронна пошта необов’язкові.</p>
+<button class="btn btn-primary" type="submit">Зберегти</button>
+<a class="btn btn-outline-secondary" asp-action="Index">Скасувати</a>

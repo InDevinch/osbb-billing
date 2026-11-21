@@ -1,0 +1,41 @@
+@model OsbbBilling.Web.Models.Entities.Owner
+@using OsbbBilling.Web.Security
+@{
+    ViewData["Title"] = "Власник";
+}
+@if (TempData["Success"] is string message)
+{
+    <div class="alert alert-success" role="status">@message</div>
+}
+<h1>@Model.FullName</h1>
+<dl class="row">
+    <dt class="col-sm-3">Телефон</dt><dd class="col-sm-9">@(Model.Phone ?? "—")</dd>
+    <dt class="col-sm-3">Електронна пошта</dt><dd class="col-sm-9">@(Model.Email ?? "—")</dd>
+</dl>
+@if (User.IsInRole(Roles.Accountant))
+{
+    <a class="btn btn-primary mb-3" asp-action="Edit" asp-route-id="@Model.OwnerId">Редагувати</a>
+}
+<h2 class="h4">Особові рахунки</h2>
+@if (Model.Accounts.Count == 0)
+{
+    <p>Особових рахунків ще немає.</p>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table">
+            <thead><tr><th scope="col">Рахунок</th><th scope="col">Адреса</th><th scope="col">Приміщення</th><th scope="col">Діє з</th><th scope="col">Діє до</th></tr></thead>
+            <tbody>
+            @foreach (var account in Model.Accounts.OrderBy(x => x.AccountNumber))
+            {
+                <tr>
+                    <td>@account.AccountNumber</td><td>@account.Premise.Building.Address</td><td>@account.Premise.Number</td>
+                    <td>@account.ValidFrom.ToString("dd.MM.yyyy")</td><td>@(account.ValidTo?.ToString("dd.MM.yyyy") ?? "—")</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+}
+<a asp-action="Index">До списку власників</a>

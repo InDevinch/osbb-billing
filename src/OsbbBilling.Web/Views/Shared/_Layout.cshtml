@@ -16,6 +16,10 @@
             @if (User.Identity?.IsAuthenticated == true)
             {
                 <a asp-controller="Workspace" asp-action="Index">Мій кабінет</a>
+                @if (User.IsInRole(Roles.Accountant) || User.IsInRole(Roles.Chairperson))
+                {
+                    <a asp-controller="Owners" asp-action="Index">Власники</a>
+                }
                 @if (Environment.IsDevelopment() && User.IsInRole(Roles.Accountant))
                 {
                     <a asp-controller="Development" asp-action="Database">Перевірка БД</a>
