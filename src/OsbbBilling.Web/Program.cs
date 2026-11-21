@@ -17,6 +17,7 @@ builder.Services.AddControllersWithViews(options =>
     options.Filters.Add(new ResponseCacheAttribute { NoStore = true, Location = ResponseCacheLocation.None });
 });
 builder.Services.AddScoped<DatabaseConnectionCheck>();
+builder.Services.AddScoped<AccountService>();
 builder.Services.AddDbContext<OsbbDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("OsbbBilling")));
 builder.Services.AddScoped<IPasswordHasher<AppUser>, PasswordHasher<AppUser>>();

@@ -1,0 +1,42 @@
+@model AccountDetailsViewModel
+@using OsbbBilling.Web.Security
+@{
+    var account = Model.Account;
+    ViewData["Title"] = "Рахунок " + account.AccountNumber;
+}
+@if (TempData["Success"] is string message)
+{
+    <div class="alert alert-success" role="status">@message</div>
+}
+<h1>Рахунок @account.AccountNumber</h1>
+<dl class="row">
+    <dt class="col-sm-3">Платник</dt><dd class="col-sm-9"><a asp-controller="Owners" asp-action="Details" asp-route-id="@account.OwnerId">@account.Owner.FullName</a></dd>
+    <dt class="col-sm-3">Адреса</dt><dd class="col-sm-9">@account.Premise.Building.Address</dd>
+    <dt class="col-sm-3">Приміщення</dt><dd class="col-sm-9"><a asp-controller="Premises" asp-action="Details" asp-route-id="@account.PremiseId">@account.Premise.Number</a></dd>
+    <dt class="col-sm-3">Діє з</dt><dd class="col-sm-9">@account.ValidFrom.ToString("dd.MM.yyyy")</dd>
+    <dt class="col-sm-3">Діє до, не включно</dt><dd class="col-sm-9">@(account.ValidTo?.ToString("dd.MM.yyyy") ?? "Не визначено")</dd>
+    <dt class="col-sm-3">Стан</dt><dd class="col-sm-9">@AccountStatuses.DisplayName(account)</dd>
+    <dt class="col-sm-3">Нарахувань</dt><dd class="col-sm-9">@Model.ChargeCount</dd>
+    <dt class="col-sm-3">Оплат</dt><dd class="col-sm-9">@Model.PaymentCount</dd>
+</dl>
+@if (User.IsInRole(Roles.Accountant) && !account.ValidTo.HasValue)
+{
+    <a class="btn btn-primary mb-4" asp-action="ChangePayer" asp-route-id="@account.AccountId">Змінити платника</a>
+}
+<h2 class="h4">Історія рахунків приміщення</h2>
+<div class="table-responsive">
+    <table class="table">
+        <thead><tr><th scope="col">Рахунок</th><th scope="col">Платник</th><th scope="col">Діє з</th><th scope="col">Діє до, не включно</th></tr></thead>
+        <tbody>
+        @foreach (var item in Model.History)
+        {
+            <tr>
+                <td><a asp-action="Details" asp-route-id="@item.AccountId">@item.AccountNumber</a></td>
+                <td>@item.Owner.FullName</td><td>@item.ValidFrom.ToString("dd.MM.yyyy")</td>
+                <td>@(item.ValidTo?.ToString("dd.MM.yyyy") ?? "Не визначено")</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>
+<a asp-action="Index" asp-route-premiseId="@account.PremiseId">До рахунків приміщення</a>

@@ -64,6 +64,7 @@ public class OsbbDbContext(DbContextOptions<OsbbDbContext> options) : DbContext(
             });
             entity.HasKey(x => x.AccountId);
             entity.Property(x => x.AccountNumber).HasMaxLength(30).IsUnicode(false);
+            entity.Property(x => x.ValidTo).IsConcurrencyToken();
             entity.HasIndex(x => x.AccountNumber).IsUnique();
             entity.HasOne(x => x.Owner).WithMany(x => x.Accounts).HasForeignKey(x => x.OwnerId);
             entity.HasOne(x => x.Premise).WithMany(x => x.Accounts).HasForeignKey(x => x.PremiseId);

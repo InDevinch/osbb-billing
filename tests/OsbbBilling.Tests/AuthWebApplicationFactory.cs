@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using OsbbBilling.Web.Data;
@@ -25,7 +26,9 @@ internal sealed class AuthWebApplicationFactory(string environment = "Developmen
         {
             services.RemoveAll<DbContextOptions<OsbbDbContext>>();
             services.RemoveAll<IDbContextOptionsConfiguration<OsbbDbContext>>();
-            services.AddDbContext<OsbbDbContext>(options => options.UseInMemoryDatabase(databaseName));
+            // Транзакції перевіряються окремо на SQL Server; тут перевіряємо HTTP та бізнес-правила.
+            services.AddDbContext<OsbbDbContext>(options => options.UseInMemoryDatabase(databaseName)
+                .ConfigureWarnings(warnings => warnings.Ignore(InMemoryEventId.TransactionIgnoredWarning)));
         });
     }
 

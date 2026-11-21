@@ -15,6 +15,7 @@
 @if (User.IsInRole(Roles.Accountant))
 {
     <a class="btn btn-primary mb-3" asp-action="Edit" asp-route-id="@Model.OwnerId">Редагувати</a>
+    <a class="btn btn-outline-primary mb-3" asp-controller="Accounts" asp-action="Create" asp-route-ownerId="@Model.OwnerId">Відкрити рахунок</a>
 }
 <h2 class="h4">Особові рахунки</h2>
 @if (Model.Accounts.Count == 0)
@@ -30,7 +31,7 @@ else
             @foreach (var account in Model.Accounts.OrderBy(x => x.AccountNumber))
             {
                 <tr>
-                    <td>@account.AccountNumber</td><td>@account.Premise.Building.Address</td><td>@account.Premise.Number</td>
+                    <td><a asp-controller="Accounts" asp-action="Details" asp-route-id="@account.AccountId">@account.AccountNumber</a></td><td>@account.Premise.Building.Address</td><td>@account.Premise.Number</td>
                     <td>@account.ValidFrom.ToString("dd.MM.yyyy")</td><td>@(account.ValidTo?.ToString("dd.MM.yyyy") ?? "—")</td>
                 </tr>
             }

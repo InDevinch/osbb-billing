@@ -21,4 +21,9 @@
     <ProjectReference Include="../../src/OsbbBilling.Web/OsbbBilling.Web.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="../../database/01_CreateDatabase.sql" Link="database/01_CreateDatabase.sql" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../../database/02_DemoData.sql" Link="database/02_DemoData.sql" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
 </Project>

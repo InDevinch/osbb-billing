@@ -1,0 +1,46 @@
+@model OpenAccountViewModel
+@{
+    ViewData["Title"] = "Відкрити рахунок";
+}
+<h1>Відкрити особовий рахунок</h1>
+@if (Model.Owners.Count == 0 || Model.Premises.Count == 0)
+{
+    <p>Для відкриття рахунку потрібні власник та приміщення.</p>
+    <a asp-controller="Owners" asp-action="Create">Додати власника</a>
+    <a class="ms-3" asp-controller="Premises" asp-action="Create">Додати приміщення</a>
+}
+else
+{
+    <form asp-action="Create" method="post" style="max-width: 680px">
+        <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+        <div class="mb-3">
+            <label asp-for="AccountNumber" class="form-label"></label>
+            <input asp-for="AccountNumber" class="form-control" maxlength="30" required />
+            <span asp-validation-for="AccountNumber" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="OwnerId" class="form-label"></label>
+            <select asp-for="OwnerId" asp-items="Model.Owners" class="form-select"><option value="">Оберіть платника</option></select>
+            <span asp-validation-for="OwnerId" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="PremiseId" class="form-label"></label>
+            <select asp-for="PremiseId" asp-items="Model.Premises" class="form-select"><option value="">Оберіть приміщення</option></select>
+            <span asp-validation-for="PremiseId" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="ValidFrom" class="form-label"></label>
+            <input asp-for="ValidFrom" class="form-control" required />
+            <span asp-validation-for="ValidFrom" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="ValidTo" class="form-label"></label>
+            <input asp-for="ValidTo" class="form-control" />
+            <span asp-validation-for="ValidTo" class="text-danger"></span>
+            <p class="form-text">Перше число місяця, з якого рахунок уже не діє. Залиште порожнім, якщо завершення ще не визначене.</p>
+        </div>
+        <p class="text-secondary">Дати мають бути першими числами місяців. Для одного приміщення періоди рахунків не можуть перетинатися.</p>
+        <button class="btn btn-primary" type="submit">Відкрити рахунок</button>
+        <a class="btn btn-outline-secondary" asp-action="Index">Скасувати</a>
+    </form>
+}

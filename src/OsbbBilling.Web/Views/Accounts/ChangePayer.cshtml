@@ -1,0 +1,37 @@
+@model ChangePayerViewModel
+@{
+    ViewData["Title"] = "Змінити платника";
+    var account = Model.CurrentAccount;
+}
+<h1>Змінити відповідального платника</h1>
+<p>Рахунок <strong>@account.AccountNumber</strong> · @account.Premise.Building.Address · приміщення @account.Premise.Number</p>
+<p>Поточний платник: <strong>@account.Owner.FullName</strong>.</p>
+@if (account.ValidTo.HasValue)
+{
+    <div class="alert alert-warning">Для цього рахунку вже визначено завершення дії: @account.ValidTo.Value.ToString("dd.MM.yyyy").</div>
+    <a asp-action="Details" asp-route-id="@account.AccountId">До історії рахунків</a>
+}
+else
+{
+    <p class="text-secondary">Попередній рахунок діятиме до обраного місяця, а з першого числа цього місяця діятиме новий. Нарахування, оплати, борг і аванс залишаться на попередньому рахунку.</p>
+    <form asp-action="ChangePayer" asp-route-id="@account.AccountId" method="post" style="max-width: 680px">
+        <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+        <div class="mb-3">
+            <label asp-for="OwnerId" class="form-label"></label>
+            <select asp-for="OwnerId" asp-items="Model.Owners" class="form-select"><option value="">Оберіть нового платника</option></select>
+            <span asp-validation-for="OwnerId" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="AccountNumber" class="form-label"></label>
+            <input asp-for="AccountNumber" class="form-control" maxlength="30" required />
+            <span asp-validation-for="AccountNumber" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="ValidFrom" class="form-label"></label>
+            <input asp-for="ValidFrom" class="form-control" required />
+            <span asp-validation-for="ValidFrom" class="text-danger"></span>
+        </div>
+        <button class="btn btn-primary" type="submit">Змінити платника</button>
+        <a class="btn btn-outline-secondary" asp-action="Details" asp-route-id="@account.AccountId">Скасувати</a>
+    </form>
+}
