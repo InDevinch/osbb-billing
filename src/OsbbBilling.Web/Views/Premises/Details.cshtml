@@ -20,6 +20,7 @@
     <a class="btn btn-outline-primary mb-3" asp-controller="Accounts" asp-action="Create" asp-route-premiseId="@Model.PremiseId">Відкрити рахунок</a>
 }
 <h2 class="h4">Особові рахунки</h2>
+<p><a asp-controller="PremiseServices" asp-action="Index" asp-route-premiseId="@Model.PremiseId">Переглянути послуги приміщення</a></p>
 @if (Model.Accounts.Count == 0)
 {
     <p>Особових рахунків ще немає.</p>

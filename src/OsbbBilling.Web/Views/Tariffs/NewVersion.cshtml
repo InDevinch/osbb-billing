@@ -1,0 +1,17 @@
+@model TariffFormViewModel
+@{
+    ViewData["Title"] = "Нова версія тарифу";
+}
+<h1>Нова версія тарифу</h1>
+@if (Model.CurrentTariff!.ValidTo.HasValue)
+{
+    <p>Цю версію вже завершено. Оберіть останній незавершений тариф.</p>
+    <a asp-action="Index" asp-route-buildingId="@Model.BuildingId" asp-route-serviceId="@Model.ServiceId">До історії тарифів</a>
+}
+else
+{
+    <p>Попередня ціна збережеться. Із зазначеного місяця діятиме нова версія.</p>
+    <form asp-action="NewVersion" asp-route-id="@Model.CurrentTariff.TariffId" method="post" style="max-width: 680px">
+        <partial name="_Form" model="Model" />
+    </form>
+}

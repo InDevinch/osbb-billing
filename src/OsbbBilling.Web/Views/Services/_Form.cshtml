@@ -1,0 +1,34 @@
+@model ServiceFormViewModel
+<div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+<div class="mb-3">
+    <label asp-for="Name" class="form-label"></label>
+    <input asp-for="Name" class="form-control" maxlength="100" required />
+    <span asp-validation-for="Name" class="text-danger"></span>
+</div>
+<div class="mb-3">
+    <label asp-for="Unit" class="form-label"></label>
+    <input asp-for="Unit" class="form-control" maxlength="20" disabled="@Model.HasAssignments" required />
+    @if (Model.HasAssignments)
+    {
+        <input name="Unit" value="@Model.Unit" type="hidden" />
+    }
+    <span asp-validation-for="Unit" class="text-danger"></span>
+</div>
+<div class="mb-3">
+    <label asp-for="CalculationMethod" class="form-label"></label>
+    <select asp-for="CalculationMethod" class="form-select" disabled="@Model.HasAssignments">
+        <option value="Area">За площею</option><option value="Residents">За кількістю мешканців</option>
+        <option value="Meter">За лічильником</option><option value="Fixed">Фіксований</option>
+    </select>
+    @if (Model.HasAssignments)
+    {
+        <input name="CalculationMethod" value="@Model.CalculationMethod" type="hidden" />
+    }
+    <span asp-validation-for="CalculationMethod" class="text-danger"></span>
+</div>
+@if (Model.HasAssignments)
+{
+    <p class="text-secondary">Послугу вже призначали приміщенням. Для іншої одиниці або способу розрахунку створіть окрему послугу.</p>
+}
+<button class="btn btn-primary" type="submit">Зберегти</button>
+<a class="btn btn-outline-secondary" asp-action="Index">Скасувати</a>

@@ -1,0 +1,23 @@
+@model StopPremiseServiceViewModel
+@{
+    ViewData["Title"] = "Завершити послугу";
+    var item = Model.CurrentAssignment;
+}
+<h1>Завершити послугу</h1>
+<p>@item.Premise.Building.Address · приміщення @item.Premise.Number · <strong>@item.Service.Name</strong></p>
+@if (item.ValidTo.HasValue)
+{
+    <p>Завершення вже визначене: @item.ValidTo.Value.ToString("dd.MM.yyyy").</p>
+}
+else
+{
+    <form asp-action="Stop" asp-route-id="@item.PremiseServiceId" method="post" style="max-width: 680px">
+        <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+        <label asp-for="ValidTo" class="form-label"></label>
+        <input asp-for="ValidTo" class="form-control" required />
+        <span asp-validation-for="ValidTo" class="text-danger"></span>
+        <p class="form-text">Із зазначеного місяця послуга не діятиме. Попередні нарахування збережуться.</p>
+        <button class="btn btn-primary" type="submit">Завершити</button>
+    </form>
+}
+<a class="d-inline-block mt-3" asp-action="Index" asp-route-premiseId="@item.PremiseId" asp-route-serviceId="@item.ServiceId">До підключень</a>

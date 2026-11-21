@@ -1,0 +1,69 @@
+@model PremiseServiceListViewModel
+@using OsbbBilling.Web.Security
+@{
+    ViewData["Title"] = "Послуги приміщень";
+}
+@if (TempData["Success"] is string message)
+{
+    <div class="alert alert-success" role="status">@message</div>
+}
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
+    <h1 class="mb-0">Послуги приміщень</h1>
+    @if (User.IsInRole(Roles.Accountant))
+    {
+        <a class="btn btn-primary" asp-action="Create" asp-route-premiseId="@Model.PremiseId" asp-route-serviceId="@Model.ServiceId">Підключити послугу</a>
+    }
+</div>
+<form asp-action="Index" method="get" class="d-flex flex-wrap gap-2 mb-3">
+    <label asp-for="PremiseId" class="visually-hidden">Приміщення</label>
+    <select asp-for="PremiseId" asp-items="Model.Premises" class="form-select" style="max-width: 380px"><option value="">Усі приміщення</option></select>
+    <label asp-for="ServiceId" class="visually-hidden">Послуга</label>
+    <select asp-for="ServiceId" asp-items="Model.Services" class="form-select" style="max-width: 320px"><option value="">Усі послуги</option></select>
+    <button class="btn btn-outline-primary" type="submit">Знайти</button>
+    <a class="btn btn-outline-secondary" asp-action="Index">Скинути</a>
+</form>
+<p class="text-secondary">Знайдено: @Model.TotalCount</p>
+@if (Model.Assignments.Count == 0)
+{
+    <p>Підключень не знайдено.</p>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead><tr><th scope="col">Адреса</th><th scope="col">Приміщення</th><th scope="col">Послуга</th><th scope="col">Діє з</th><th scope="col">Діє до, не включно</th><th scope="col">Дії</th></tr></thead>
+            <tbody>
+            @foreach (var item in Model.Assignments)
+            {
+                <tr>
+                    <td>@item.Premise.Building.Address</td>
+                    <td><a asp-controller="Premises" asp-action="Details" asp-route-id="@item.PremiseId">@item.Premise.Number</a></td>
+                    <td>@item.Service.Name</td><td>@item.ValidFrom.ToString("dd.MM.yyyy")</td>
+                    <td>@(item.ValidTo?.ToString("dd.MM.yyyy") ?? "Не визначено")</td>
+                    <td class="text-nowrap">
+                        <a asp-controller="Tariffs" asp-action="Index" asp-route-buildingId="@item.Premise.BuildingId" asp-route-serviceId="@item.ServiceId">Тарифи</a>
+                        @if (User.IsInRole(Roles.Accountant) && !item.ValidTo.HasValue)
+                        {
+                            <a class="ms-2" asp-action="Stop" asp-route-id="@item.PremiseServiceId">Завершити</a>
+                        }
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+}
+@if (Model.TotalPages > 1)
+{
+    <nav class="d-flex gap-3" aria-label="Сторінки">
+        @if (Model.Page > 1)
+        {
+            <a asp-action="Index" asp-route-premiseId="@Model.PremiseId" asp-route-serviceId="@Model.ServiceId" asp-route-page="@(Model.Page - 1)">Назад</a>
+        }
+        <span>Сторінка @Model.Page з @Model.TotalPages</span>
+        @if (Model.Page < Model.TotalPages)
+        {
+            <a asp-action="Index" asp-route-premiseId="@Model.PremiseId" asp-route-serviceId="@Model.ServiceId" asp-route-page="@(Model.Page + 1)">Далі</a>
+        }
+    </nav>
+}

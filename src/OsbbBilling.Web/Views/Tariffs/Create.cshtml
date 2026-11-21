@@ -1,0 +1,15 @@
+@model TariffFormViewModel
+@{
+    ViewData["Title"] = "Додати тариф";
+}
+<h1>Додати тариф</h1>
+@if (Model.Buildings.Count == 0 || Model.Services.Count == 0)
+{
+    <p>Спочатку додайте будинок і послугу.</p>
+    <a asp-controller="Buildings" asp-action="Create">Додати будинок</a>
+    <a class="ms-3" asp-controller="Services" asp-action="Create">Додати послугу</a>
+}
+else
+{
+    <form asp-action="Create" method="post" style="max-width: 680px"><partial name="_Form" model="Model" /></form>
+}

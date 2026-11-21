@@ -1,0 +1,67 @@
+@model TariffListViewModel
+@using OsbbBilling.Web.Security
+@{
+    ViewData["Title"] = "Тарифи";
+}
+@if (TempData["Success"] is string message)
+{
+    <div class="alert alert-success" role="status">@message</div>
+}
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
+    <h1 class="mb-0">Історія тарифів</h1>
+    @if (User.IsInRole(Roles.Accountant))
+    {
+        <a class="btn btn-primary" asp-action="Create" asp-route-buildingId="@Model.BuildingId" asp-route-serviceId="@Model.ServiceId">Додати тариф</a>
+    }
+</div>
+<form asp-action="Index" method="get" class="d-flex flex-wrap gap-2 mb-3">
+    <label asp-for="BuildingId" class="visually-hidden">Будинок</label>
+    <select asp-for="BuildingId" asp-items="Model.Buildings" class="form-select" style="max-width: 380px"><option value="">Усі будинки</option></select>
+    <label asp-for="ServiceId" class="visually-hidden">Послуга</label>
+    <select asp-for="ServiceId" asp-items="Model.Services" class="form-select" style="max-width: 320px"><option value="">Усі послуги</option></select>
+    <button class="btn btn-outline-primary" type="submit">Знайти</button>
+    <a class="btn btn-outline-secondary" asp-action="Index">Скинути</a>
+</form>
+<p class="text-secondary">Знайдено: @Model.TotalCount</p>
+@if (Model.Tariffs.Count == 0)
+{
+    <p>Тарифів не знайдено.</p>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead><tr><th scope="col">Будинок</th><th scope="col">Послуга</th><th scope="col">Ціна, грн/од.</th><th scope="col">Діє з</th><th scope="col">Діє до, не включно</th><th scope="col">Дії</th></tr></thead>
+            <tbody>
+            @foreach (var tariff in Model.Tariffs)
+            {
+                <tr>
+                    <td>@tariff.Building.Address</td><td>@tariff.Service.Name (@tariff.Service.Unit)</td>
+                    <td>@tariff.UnitPrice.ToString("0.####")</td><td>@tariff.ValidFrom.ToString("dd.MM.yyyy")</td>
+                    <td>@(tariff.ValidTo?.ToString("dd.MM.yyyy") ?? "Не визначено")</td>
+                    <td>
+                        @if (User.IsInRole(Roles.Accountant) && !tariff.ValidTo.HasValue)
+                        {
+                            <a asp-action="NewVersion" asp-route-id="@tariff.TariffId">Нова версія</a>
+                        }
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+}
+@if (Model.TotalPages > 1)
+{
+    <nav class="d-flex gap-3" aria-label="Сторінки">
+        @if (Model.Page > 1)
+        {
+            <a asp-action="Index" asp-route-buildingId="@Model.BuildingId" asp-route-serviceId="@Model.ServiceId" asp-route-page="@(Model.Page - 1)">Назад</a>
+        }
+        <span>Сторінка @Model.Page з @Model.TotalPages</span>
+        @if (Model.Page < Model.TotalPages)
+        {
+            <a asp-action="Index" asp-route-buildingId="@Model.BuildingId" asp-route-serviceId="@Model.ServiceId" asp-route-page="@(Model.Page + 1)">Далі</a>
+        }
+    </nav>
+}

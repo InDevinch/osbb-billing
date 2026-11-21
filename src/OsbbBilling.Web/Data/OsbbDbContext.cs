@@ -105,6 +105,7 @@ public class OsbbDbContext(DbContextOptions<OsbbDbContext> options) : DbContext(
                 table.UseSqlOutputClause(false);
             });
             entity.HasKey(x => x.TariffId);
+            entity.Property(x => x.ValidTo).IsConcurrencyToken();
             entity.Property(x => x.UnitPrice).HasPrecision(18, 4);
             entity.HasIndex(x => new { x.BuildingId, x.ServiceId, x.ValidFrom }).IsUnique();
             entity.HasOne(x => x.Building).WithMany(x => x.Tariffs).HasForeignKey(x => x.BuildingId);
@@ -119,6 +120,7 @@ public class OsbbDbContext(DbContextOptions<OsbbDbContext> options) : DbContext(
                 table.UseSqlOutputClause(false);
             });
             entity.HasKey(x => x.PremiseServiceId);
+            entity.Property(x => x.ValidTo).IsConcurrencyToken();
             entity.HasIndex(x => new { x.PremiseId, x.ServiceId, x.ValidFrom }).IsUnique();
             entity.HasOne(x => x.Premise).WithMany(x => x.PremiseServices).HasForeignKey(x => x.PremiseId);
             entity.HasOne(x => x.Service).WithMany(x => x.PremiseServices).HasForeignKey(x => x.ServiceId);

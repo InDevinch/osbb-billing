@@ -1,0 +1,40 @@
+@model PremiseServiceFormViewModel
+@{
+    ViewData["Title"] = "Підключити послугу";
+}
+<h1>Підключити послугу приміщенню</h1>
+@if (Model.Premises.Count == 0 || Model.Services.Count == 0)
+{
+    <p>Спочатку додайте приміщення та послугу.</p>
+    <a asp-controller="Premises" asp-action="Create">Додати приміщення</a>
+    <a class="ms-3" asp-controller="Services" asp-action="Create">Додати послугу</a>
+}
+else
+{
+    <form asp-action="Create" method="post" style="max-width: 680px">
+        <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+        <div class="mb-3">
+            <label asp-for="PremiseId" class="form-label"></label>
+            <select asp-for="PremiseId" asp-items="Model.Premises" class="form-select"><option value="">Оберіть приміщення</option></select>
+            <span asp-validation-for="PremiseId" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="ServiceId" class="form-label"></label>
+            <select asp-for="ServiceId" asp-items="Model.Services" class="form-select"><option value="">Оберіть послугу</option></select>
+            <span asp-validation-for="ServiceId" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="ValidFrom" class="form-label"></label>
+            <input asp-for="ValidFrom" class="form-control" required />
+            <span asp-validation-for="ValidFrom" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="ValidTo" class="form-label"></label>
+            <input asp-for="ValidTo" class="form-control" />
+            <span asp-validation-for="ValidTo" class="text-danger"></span>
+        </div>
+        <p class="text-secondary">Дати — перші числа місяців. Завершення можна залишити невизначеним.</p>
+        <button class="btn btn-primary" type="submit">Підключити</button>
+        <a class="btn btn-outline-secondary" asp-action="Index">Скасувати</a>
+    </form>
+}
