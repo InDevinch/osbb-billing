@@ -134,6 +134,7 @@ public class OsbbDbContext(DbContextOptions<OsbbDbContext> options) : DbContext(
                 table.UseSqlOutputClause(false);
             });
             entity.HasKey(x => x.MeterId);
+            entity.Property(x => x.RemovedOn).IsConcurrencyToken();
             entity.Property(x => x.SerialNumber).HasMaxLength(50);
             entity.Property(x => x.InitialReading).HasPrecision(18, 3);
             entity.HasIndex(x => x.SerialNumber).IsUnique();
@@ -149,6 +150,8 @@ public class OsbbDbContext(DbContextOptions<OsbbDbContext> options) : DbContext(
             });
             entity.HasKey(x => x.MeterReadingId);
             entity.Property(x => x.ReadingValue).HasPrecision(18, 3);
+            entity.Property(x => x.ReadingValue).IsConcurrencyToken();
+            entity.Property(x => x.ReadingDate).IsConcurrencyToken();
             entity.HasIndex(x => new { x.MeterId, x.Period }).IsUnique();
             entity.HasOne(x => x.Meter).WithMany(x => x.MeterReadings).HasForeignKey(x => x.MeterId);
         });

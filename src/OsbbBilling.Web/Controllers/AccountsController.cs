@@ -175,8 +175,8 @@ public class AccountsController(OsbbDbContext database, AccountService accountSe
     }
 
     private Task<Account?> FindAccountAsync(int id, CancellationToken cancellationToken) =>
-        database.Accounts.AsNoTracking().Include(x => x.Owner).Include(x => x.Premise).ThenInclude(x => x.Building)
-            .SingleOrDefaultAsync(x => x.AccountId == id, cancellationToken);
+        SqlReadRetry.ExecuteAsync(() => database.Accounts.AsNoTracking().Include(x => x.Owner).Include(x => x.Premise).ThenInclude(x => x.Building)
+            .SingleOrDefaultAsync(x => x.AccountId == id, cancellationToken), cancellationToken);
 
     private async Task<List<SelectListItem>> OwnerOptionsAsync(CancellationToken cancellationToken) =>
         await database.Owners.AsNoTracking().OrderBy(x => x.FullName).ThenBy(x => x.OwnerId)

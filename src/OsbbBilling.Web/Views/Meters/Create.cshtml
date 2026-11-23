@@ -1,0 +1,44 @@
+@model InstallMeterViewModel
+@{
+    ViewData["Title"] = "Встановити лічильник";
+}
+<h1>Встановити лічильник</h1>
+@if (Model.Assignments.Count == 0)
+{
+    <p>Спочатку підключіть приміщенню послугу з розрахунком за лічильником.</p>
+    <a asp-controller="PremiseServices" asp-action="Create">Підключити послугу</a>
+}
+else
+{
+    <form asp-action="Create" method="post" style="max-width: 680px">
+        <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+        <div class="mb-3">
+            <label asp-for="PremiseServiceId" class="form-label"></label>
+            <select asp-for="PremiseServiceId" asp-items="Model.Assignments" class="form-select"><option value="">Оберіть послугу приміщення</option></select>
+            <span asp-validation-for="PremiseServiceId" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="SerialNumber" class="form-label"></label>
+            <input asp-for="SerialNumber" class="form-control" maxlength="50" required />
+            <span asp-validation-for="SerialNumber" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="InstalledOn" class="form-label"></label>
+            <input asp-for="InstalledOn" class="form-control" required />
+            <span asp-validation-for="InstalledOn" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="RemovedOn" class="form-label"></label>
+            <input asp-for="RemovedOn" class="form-control" />
+            <span asp-validation-for="RemovedOn" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="InitialReading" class="form-label"></label>
+            <input asp-for="InitialReading" type="number" min="0" max="999999999999999.999" step="0.001" class="form-control" required />
+            <span asp-validation-for="InitialReading" class="text-danger"></span>
+        </div>
+        <p class="text-secondary">Період роботи задається повними місяцями. Початкове показання використовується для розрахунку першого місяця.</p>
+        <button class="btn btn-primary" type="submit">Встановити</button>
+        <a class="btn btn-outline-secondary" asp-action="Index">Скасувати</a>
+    </form>
+}

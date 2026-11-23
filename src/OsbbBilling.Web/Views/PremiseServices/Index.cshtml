@@ -42,6 +42,10 @@ else
                     <td>@(item.ValidTo?.ToString("dd.MM.yyyy") ?? "Не визначено")</td>
                     <td class="text-nowrap">
                         <a asp-controller="Tariffs" asp-action="Index" asp-route-buildingId="@item.Premise.BuildingId" asp-route-serviceId="@item.ServiceId">Тарифи</a>
+                        @if (item.Service.CalculationMethod == "Meter")
+                        {
+                            <a class="ms-2" asp-controller="Meters" asp-action="Index" asp-route-premiseServiceId="@item.PremiseServiceId">Лічильники</a>
+                        }
                         @if (User.IsInRole(Roles.Accountant) && !item.ValidTo.HasValue)
                         {
                             <a class="ms-2" asp-action="Stop" asp-route-id="@item.PremiseServiceId">Завершити</a>

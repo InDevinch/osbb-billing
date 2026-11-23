@@ -1,0 +1,22 @@
+@model RemoveMeterViewModel
+@{
+    ViewData["Title"] = "Завершити роботу лічильника";
+}
+<h1>Завершити роботу лічильника</h1>
+<p>Лічильник <strong>@Model.CurrentMeter.SerialNumber</strong> · @Model.CurrentMeter.PremiseService.Service.Name</p>
+@if (Model.CurrentMeter.RemovedOn.HasValue)
+{
+    <p>Завершення вже визначене: @Model.CurrentMeter.RemovedOn.Value.ToString("dd.MM.yyyy").</p>
+}
+else
+{
+    <form asp-action="Remove" asp-route-id="@Model.CurrentMeter.MeterId" method="post" style="max-width: 680px">
+        <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+        <label asp-for="RemovedOn" class="form-label"></label>
+        <input asp-for="RemovedOn" class="form-control" required />
+        <span asp-validation-for="RemovedOn" class="text-danger"></span>
+        <p class="form-text">Із зазначеного місяця лічильник не працюватиме. Показання та нарахування збережуться.</p>
+        <button class="btn btn-primary" type="submit">Завершити роботу</button>
+    </form>
+}
+<a class="d-inline-block mt-3" asp-action="Details" asp-route-id="@Model.CurrentMeter.MeterId">До лічильника</a>

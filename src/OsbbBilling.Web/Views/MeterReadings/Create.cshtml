@@ -1,0 +1,8 @@
+@model MeterReadingFormViewModel
+@{
+    ViewData["Title"] = "Внести показання";
+}
+<h1>@ViewData["Title"]</h1>
+<form asp-action="Create" method="post" style="max-width: 680px">
+    <partial name="_Form" model="Model" />
+</form>

@@ -1,0 +1,58 @@
+@model MeterDetailsViewModel
+@using OsbbBilling.Web.Security
+@{
+    var meter = Model.Meter;
+    ViewData["Title"] = "Лічильник " + meter.SerialNumber;
+}
+@if (TempData["Success"] is string message)
+{
+    <div class="alert alert-success" role="status">@message</div>
+}
+<h1>Лічильник @meter.SerialNumber</h1>
+<p>@meter.PremiseService.Premise.Building.Address · приміщення @meter.PremiseService.Premise.Number · @meter.PremiseService.Service.Name</p>
+<dl class="row">
+    <dt class="col-sm-3">Працює з</dt><dd class="col-sm-9">@meter.InstalledOn.ToString("dd.MM.yyyy")</dd>
+    <dt class="col-sm-3">Працює до, не включно</dt><dd class="col-sm-9">@(meter.RemovedOn?.ToString("dd.MM.yyyy") ?? "Не визначено")</dd>
+    <dt class="col-sm-3">Початкове показання</dt><dd class="col-sm-9">@meter.InitialReading.ToString("0.###") @meter.PremiseService.Service.Unit</dd>
+</dl>
+@if (User.IsInRole(Roles.Accountant))
+{
+    <a class="btn btn-primary mb-3" asp-controller="MeterReadings" asp-action="Create" asp-route-meterId="@meter.MeterId">Внести показання</a>
+    @if (!meter.RemovedOn.HasValue)
+    {
+        <a class="btn btn-outline-secondary mb-3" asp-action="Remove" asp-route-id="@meter.MeterId">Завершити роботу</a>
+    }
+}
+<h2 class="h4">Показання за місяцями</h2>
+@if (Model.Readings.Count == 0)
+{
+    <p>Показань ще немає.</p>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead><tr><th scope="col">Місяць</th><th scope="col">Дата</th><th scope="col">Показання</th><th scope="col">Витрата, @meter.PremiseService.Service.Unit</th><th scope="col">Дії</th></tr></thead>
+            <tbody>
+            @foreach (var row in Model.Readings)
+            {
+                <tr>
+                    <td>@row.Period.ToString("MM.yyyy")</td><td>@row.ReadingDate.ToString("dd.MM.yyyy")</td>
+                    <td>@row.ReadingValue.ToString("0.###")</td><td>@(row.Consumption?.ToString("0.###") ?? "Немає попереднього показання")</td>
+                    <td>
+                        @if (row.IsUsed)
+                        {
+                            <span class="text-secondary">Використано в нарахуванні</span>
+                        }
+                        else if (User.IsInRole(Roles.Accountant))
+                        {
+                            <a asp-controller="MeterReadings" asp-action="Edit" asp-route-id="@row.MeterReadingId">Редагувати</a>
+                        }
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+}
+<a asp-action="Index" asp-route-premiseServiceId="@meter.PremiseServiceId">До лічильників послуги</a>

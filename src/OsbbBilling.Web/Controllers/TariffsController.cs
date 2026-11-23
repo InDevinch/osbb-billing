@@ -113,8 +113,8 @@ public class TariffsController(OsbbDbContext database, TariffService tariffServi
     }
 
     private Task<Tariff?> FindAsync(int id, CancellationToken cancellationToken) =>
-        database.Tariffs.AsNoTracking().Include(x => x.Building).Include(x => x.Service)
-            .SingleOrDefaultAsync(x => x.TariffId == id, cancellationToken);
+        SqlReadRetry.ExecuteAsync(() => database.Tariffs.AsNoTracking().Include(x => x.Building).Include(x => x.Service)
+            .SingleOrDefaultAsync(x => x.TariffId == id, cancellationToken), cancellationToken);
     private async Task<List<SelectListItem>> BuildingsAsync(CancellationToken cancellationToken) =>
         await database.Buildings.AsNoTracking().OrderBy(x => x.Address)
             .Select(x => new SelectListItem(x.Address, x.BuildingId.ToString())).ToListAsync(cancellationToken);

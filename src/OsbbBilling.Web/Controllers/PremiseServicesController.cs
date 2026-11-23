@@ -111,8 +111,8 @@ public class PremiseServicesController(OsbbDbContext database, PremiseServiceMan
     }
 
     private Task<PremiseService?> FindAsync(int id, CancellationToken cancellationToken) =>
-        database.PremiseServices.AsNoTracking().Include(x => x.Service).Include(x => x.Premise).ThenInclude(x => x.Building)
-            .SingleOrDefaultAsync(x => x.PremiseServiceId == id, cancellationToken);
+        SqlReadRetry.ExecuteAsync(() => database.PremiseServices.AsNoTracking().Include(x => x.Service).Include(x => x.Premise).ThenInclude(x => x.Building)
+            .SingleOrDefaultAsync(x => x.PremiseServiceId == id, cancellationToken), cancellationToken);
     private async Task<List<SelectListItem>> PremisesAsync(CancellationToken cancellationToken) =>
         await database.Premises.AsNoTracking().OrderBy(x => x.Building.Address).ThenBy(x => x.Number)
             .Select(x => new SelectListItem(x.Building.Address + " / " + x.Number, x.PremiseId.ToString())).ToListAsync(cancellationToken);
