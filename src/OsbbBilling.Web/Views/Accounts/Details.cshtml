@@ -23,6 +23,7 @@
 {
     <a class="btn btn-primary mb-4" asp-action="ChangePayer" asp-route-id="@account.AccountId">Змінити платника</a>
 }
+<p><a asp-controller="Charges" asp-action="Index" asp-route-accountId="@account.AccountId">Переглянути нарахування цього рахунку</a></p>
 <h2 class="h4">Історія рахунків приміщення</h2>
 <div class="table-responsive">
     <table class="table">

@@ -77,7 +77,8 @@ public abstract class SqlDatabaseTestBase : IAsyncLifetime
         await using var sqlConnection = new SqlConnection(useMaster ? masterConnection : connection);
         await sqlConnection.OpenAsync();
         await using var command = sqlConnection.CreateCommand();
-        command.CommandTimeout = 60;
+        // Створення та видалення тестової БД може тривати довше на завантаженому сервері.
+        command.CommandTimeout = 180;
         command.CommandText = sql;
         await command.ExecuteNonQueryAsync();
     }

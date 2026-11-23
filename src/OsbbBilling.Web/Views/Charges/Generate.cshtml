@@ -1,0 +1,22 @@
+@model GenerateChargesViewModel
+@{
+    ViewData["Title"] = "Щомісячні нарахування";
+}
+<h1>Виконати щомісячні нарахування</h1>
+<p>Розрахунок охопить усі активні послуги ОСББ за обраний місяць.</p>
+<p>Перевірте рахунки, тарифи та показання лічильників. Уже проведені нарахування збережуться; повторний запуск не створює дублікатів.</p>
+<form asp-action="Generate" method="post" style="max-width: 580px">
+    <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+    <div class="mb-3">
+        <label asp-for="Period" class="form-label"></label>
+        <input asp-for="Period" class="form-control" required />
+        <span asp-validation-for="Period" class="text-danger"></span>
+    </div>
+    <button class="btn btn-primary" type="submit">Виконати нарахування</button>
+    <a class="btn btn-outline-secondary" asp-action="Index">До списку</a>
+</form>
+<div class="d-flex flex-wrap gap-3 mt-4">
+    <a asp-controller="Accounts" asp-action="Index">Рахунки</a>
+    <a asp-controller="Tariffs" asp-action="Index">Тарифи</a>
+    <a asp-controller="Meters" asp-action="Index">Показання лічильників</a>
+</div>

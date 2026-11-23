@@ -1,0 +1,77 @@
+@model ChargeListViewModel
+@using OsbbBilling.Web.Security
+@{
+    ViewData["Title"] = "Нарахування";
+}
+@if (TempData["Success"] is string message)
+{
+    <div class="alert alert-success" role="status">@message</div>
+}
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
+    <h1 class="mb-0">Нарахування</h1>
+    @if (User.IsInRole(Roles.Accountant))
+    {
+        <a class="btn btn-primary" asp-action="Generate">Виконати нарахування</a>
+    }
+</div>
+<form asp-action="Index" method="get" class="row g-2 mb-3">
+    <div class="col-md-4">
+        <label asp-for="Period" class="form-label">Місяць — перше число</label>
+        <input asp-for="Period" class="form-control" />
+        <span asp-validation-for="Period" class="text-danger"></span>
+    </div>
+    <div class="col-md-4">
+        <label asp-for="BuildingId" class="form-label">Будинок</label>
+        <select asp-for="BuildingId" asp-items="Model.Buildings" class="form-select"><option value="">Усі будинки</option></select>
+    </div>
+    <div class="col-md-4">
+        <label asp-for="AccountId" class="form-label">Рахунок</label>
+        <select asp-for="AccountId" asp-items="Model.Accounts" class="form-select"><option value="">Усі рахунки</option></select>
+    </div>
+    <div class="col-md-8">
+        <label for="search" class="visually-hidden">Пошук</label>
+        <input id="search" name="search" value="@Model.Search" class="form-control" type="search" placeholder="Рахунок, ПІБ або послуга" />
+    </div>
+    <div class="col-md-4 d-flex gap-2">
+        <button class="btn btn-outline-primary" type="submit">Знайти</button>
+        <a class="btn btn-outline-secondary" asp-action="Index">Скинути</a>
+    </div>
+</form>
+<p class="text-secondary">Знайдено: @Model.TotalCount · Загальна сума: @Model.TotalAmount.ToString("0.00") грн</p>
+@if (Model.Charges.Count == 0)
+{
+    <p>Нарахувань за обраними умовами не знайдено.</p>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead><tr><th scope="col">Місяць</th><th scope="col">Рахунок</th><th scope="col">Платник</th><th scope="col">Послуга</th><th scope="col">Кількість</th><th scope="col">Ціна, грн</th><th scope="col">Сума, грн</th></tr></thead>
+            <tbody>
+            @foreach (var charge in Model.Charges)
+            {
+                <tr>
+                    <td><a asp-action="Details" asp-route-id="@charge.ChargeId">@charge.Period.ToString("MM.yyyy")</a></td>
+                    <td>@charge.Account.AccountNumber</td><td>@charge.Account.Owner.FullName</td><td>@charge.PremiseService.Service.Name</td>
+                    <td>@charge.Quantity.ToString("0.###") @charge.PremiseService.Service.Unit</td>
+                    <td>@charge.UnitPrice.ToString("0.####")</td><td>@charge.Amount.ToString("0.00")</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+}
+@if (Model.TotalPages > 1)
+{
+    <nav class="d-flex gap-3" aria-label="Сторінки нарахувань">
+        @if (Model.Page > 1)
+        {
+            <a asp-action="Index" asp-route-period="@Model.Period?.ToString("yyyy-MM-dd")" asp-route-accountId="@Model.AccountId" asp-route-buildingId="@Model.BuildingId" asp-route-search="@Model.Search" asp-route-page="@(Model.Page - 1)">Назад</a>
+        }
+        <span>Сторінка @Model.Page з @Model.TotalPages</span>
+        @if (Model.Page < Model.TotalPages)
+        {
+            <a asp-action="Index" asp-route-period="@Model.Period?.ToString("yyyy-MM-dd")" asp-route-accountId="@Model.AccountId" asp-route-buildingId="@Model.BuildingId" asp-route-search="@Model.Search" asp-route-page="@(Model.Page + 1)">Далі</a>
+        }
+    </nav>
+}

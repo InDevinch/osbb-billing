@@ -1,0 +1,18 @@
+@model OsbbBilling.Web.Models.Entities.Charge
+@{
+    ViewData["Title"] = "Нарахування";
+}
+<h1>Нарахування за @Model.Period.ToString("MM.yyyy")</h1>
+<dl class="row">
+    <dt class="col-sm-3">Рахунок</dt><dd class="col-sm-9"><a asp-controller="Accounts" asp-action="Details" asp-route-id="@Model.AccountId">@Model.Account.AccountNumber</a></dd>
+    <dt class="col-sm-3">Платник</dt><dd class="col-sm-9">@Model.Account.Owner.FullName</dd>
+    <dt class="col-sm-3">Адреса</dt><dd class="col-sm-9">@Model.Account.Premise.Building.Address · приміщення @Model.Account.Premise.Number</dd>
+    <dt class="col-sm-3">Послуга</dt><dd class="col-sm-9">@Model.PremiseService.Service.Name</dd>
+    <dt class="col-sm-3">Розрахунок</dt><dd class="col-sm-9">@CalculationMethods.DisplayName(Model.PremiseService.Service.CalculationMethod)</dd>
+    <dt class="col-sm-3">Кількість</dt><dd class="col-sm-9">@Model.Quantity.ToString("0.###") @Model.PremiseService.Service.Unit</dd>
+    <dt class="col-sm-3">Ціна за одиницю</dt><dd class="col-sm-9">@Model.UnitPrice.ToString("0.####") грн</dd>
+    <dt class="col-sm-3">Сума</dt><dd class="col-sm-9">@Model.Amount.ToString("0.00") грн</dd>
+    <dt class="col-sm-3">Автор</dt><dd class="col-sm-9">@Model.CreatedByUser.Login</dd>
+</dl>
+<p class="text-secondary">Проведене нарахування зберігає кількість і ціну свого місяця.</p>
+<a asp-action="Index" asp-route-accountId="@Model.AccountId" asp-route-period="@Model.Period.ToString("yyyy-MM-dd")">До нарахувань рахунку</a>
