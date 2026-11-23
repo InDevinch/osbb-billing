@@ -17,3 +17,4 @@ jobs:
       - run: dotnet test --no-build --configuration Release --filter "Category!=Integration"
         env:
           DOTNET_HOSTBUILDER__RELOADCONFIGONCHANGE: 'false'
+          DOTNET_USE_POLLING_FILE_WATCHER: '1'

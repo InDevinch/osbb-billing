@@ -19,7 +19,9 @@ internal static class TestForms
 
     public static async Task<string> TokenAsync(HttpClient client, string path = "/Account/Login")
     {
-        var html = await client.GetStringAsync(path);
+        using var response = await client.GetAsync(path);
+        var html = await response.Content.ReadAsStringAsync();
+        Assert.True(response.IsSuccessStatusCode, $"GET {path}: {response.StatusCode}\n{html}");
         return TokenFromHtml(html);
     }
 
