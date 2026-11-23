@@ -12,7 +12,7 @@ using OsbbBilling.Web.Services;
 namespace OsbbBilling.Web.Controllers;
 
 [Authorize(Roles = Roles.Accountant + "," + Roles.Chairperson)]
-public class AccountsController(OsbbDbContext database, AccountService accountService,
+public class AccountsController(OsbbDbContext database, AccountService accountService, AccountBalanceService balances,
     ILogger<AccountsController> logger) : Controller
 {
     [HttpGet]
@@ -57,12 +57,14 @@ public class AccountsController(OsbbDbContext database, AccountService accountSe
     {
         var account = await FindAccountAsync(id, cancellationToken);
         if (account is null) return NotFound();
+        var balance = await balances.FindAsync(id, cancellationToken);
+        if (balance is null) return NotFound();
         var history = await database.Accounts.AsNoTracking().Include(x => x.Owner)
             .Where(x => x.PremiseId == account.PremiseId)
             .OrderBy(x => x.ValidFrom).ThenBy(x => x.AccountId).ToListAsync(cancellationToken);
         return View(new AccountDetailsViewModel
         {
-            Account = account, History = history,
+            Account = account, History = history, Balance = balance,
             ChargeCount = await database.Charges.CountAsync(x => x.AccountId == id, cancellationToken),
             PaymentCount = await database.Payments.CountAsync(x => x.AccountId == id, cancellationToken)
         });

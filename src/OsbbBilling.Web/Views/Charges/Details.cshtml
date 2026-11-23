@@ -1,6 +1,7 @@
 @model OsbbBilling.Web.Models.Entities.Charge
 @{
     ViewData["Title"] = "Нарахування";
+    var paid = Model.PaymentAllocations.Sum(x => x.Amount);
 }
 <h1>Нарахування за @Model.Period.ToString("MM.yyyy")</h1>
 <dl class="row">
@@ -12,7 +13,28 @@
     <dt class="col-sm-3">Кількість</dt><dd class="col-sm-9">@Model.Quantity.ToString("0.###") @Model.PremiseService.Service.Unit</dd>
     <dt class="col-sm-3">Ціна за одиницю</dt><dd class="col-sm-9">@Model.UnitPrice.ToString("0.####") грн</dd>
     <dt class="col-sm-3">Сума</dt><dd class="col-sm-9">@Model.Amount.ToString("0.00") грн</dd>
+    <dt class="col-sm-3">Сплачено</dt><dd class="col-sm-9">@paid.ToString("0.00") грн</dd>
+    <dt class="col-sm-3">Залишок боргу</dt><dd class="col-sm-9">@((Model.Amount - paid).ToString("0.00")) грн</dd>
     <dt class="col-sm-3">Автор</dt><dd class="col-sm-9">@Model.CreatedByUser.Login</dd>
 </dl>
+@if (Model.PaymentAllocations.Count > 0)
+{
+    <h2 class="h4">Зараховані оплати</h2>
+    <div class="table-responsive">
+        <table class="table">
+            <thead><tr><th scope="col">Дата оплати</th><th scope="col">Документ</th><th scope="col">Зараховано, грн</th></tr></thead>
+            <tbody>
+            @foreach (var allocation in Model.PaymentAllocations.OrderBy(x => x.Payment.PaymentDate).ThenBy(x => x.PaymentId))
+            {
+                <tr>
+                    <td>@allocation.Payment.PaymentDate.ToString("dd.MM.yyyy")</td>
+                    <td><a asp-controller="Payments" asp-action="Details" asp-route-id="@allocation.PaymentId">@allocation.Payment.Reference</a></td>
+                    <td>@allocation.Amount.ToString("0.00")</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+}
 <p class="text-secondary">Проведене нарахування зберігає кількість і ціну свого місяця.</p>
 <a asp-action="Index" asp-route-accountId="@Model.AccountId" asp-route-period="@Model.Period.ToString("yyyy-MM-dd")">До нарахувань рахунку</a>

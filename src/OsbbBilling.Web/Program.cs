@@ -24,6 +24,7 @@ builder.Services.AddScoped<MeterService>();
 builder.Services.AddScoped<MeterReadingService>();
 builder.Services.AddScoped<ChargeGenerationService>();
 builder.Services.AddScoped<PaymentRegistrationService>();
+builder.Services.AddScoped<AccountBalanceService>();
 builder.Services.AddDbContext<OsbbDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("OsbbBilling")));
 builder.Services.AddScoped<IPasswordHasher<AppUser>, PasswordHasher<AppUser>>();

@@ -59,7 +59,9 @@ public class ChargesController(OsbbDbContext database, ChargeGenerationService g
             .Include(x => x.Account).ThenInclude(x => x.Owner)
             .Include(x => x.Account).ThenInclude(x => x.Premise).ThenInclude(x => x.Building)
             .Include(x => x.PremiseService).ThenInclude(x => x.Service)
-            .Include(x => x.CreatedByUser).SingleOrDefaultAsync(x => x.ChargeId == id, cancellationToken), cancellationToken);
+            .Include(x => x.CreatedByUser)
+            .Include(x => x.PaymentAllocations).ThenInclude(x => x.Payment)
+            .SingleOrDefaultAsync(x => x.ChargeId == id, cancellationToken), cancellationToken);
         return charge is null ? NotFound() : View(charge);
     }
 

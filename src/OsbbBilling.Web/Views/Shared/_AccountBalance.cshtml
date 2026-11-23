@@ -1,0 +1,10 @@
+@model AccountBalanceViewModel
+<h2 class="h4">Поточний баланс</h2>
+<p class="text-secondary">За весь період обліку цього рахунку, з урахуванням проведених розподілів оплат.</p>
+<dl class="row">
+    <dt class="col-sm-3">Нараховано</dt><dd class="col-sm-9">@Model.TotalCharged.ToString("0.00") грн</dd>
+    <dt class="col-sm-3">Сплачено</dt><dd class="col-sm-9">@Model.TotalPaid.ToString("0.00") грн</dd>
+    <dt class="col-sm-3">Борг</dt><dd class="col-sm-9">@Model.DebtAmount.ToString("0.00") грн</dd>
+    <dt class="col-sm-3">Аванс</dt><dd class="col-sm-9">@Model.CreditAmount.ToString("0.00") грн</dd>
+    <dt class="col-sm-3">Сальдо</dt><dd class="col-sm-9">@Model.NetBalance.ToString("0.00") грн</dd>
+</dl>

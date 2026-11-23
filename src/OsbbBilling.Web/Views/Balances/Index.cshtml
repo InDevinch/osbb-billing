@@ -1,0 +1,60 @@
+@model BalanceListViewModel
+@{
+    ViewData["Title"] = "Баланси рахунків";
+}
+<h1>Баланси рахунків</h1>
+<p class="text-secondary">Поточні суми за весь період обліку. Борги й аванси різних рахунків не переносяться між платниками.</p>
+<form asp-action="Index" method="get" class="row g-2 mb-3">
+    <div class="col-md-4">
+        <label asp-for="BuildingId" class="form-label">Будинок</label>
+        <select asp-for="BuildingId" asp-items="Model.Buildings" class="form-select"><option value="">Усі будинки</option></select>
+        <span asp-validation-for="BuildingId" class="text-danger"></span>
+    </div>
+    <div class="col-md-5">
+        <label for="search" class="form-label">Пошук</label>
+        <input id="search" name="search" value="@Model.Search" class="form-control" type="search" placeholder="Рахунок, ПІБ, адреса або приміщення" />
+    </div>
+    <div class="col-md-3 d-flex align-items-end gap-2">
+        <button class="btn btn-outline-primary" type="submit">Знайти</button>
+        <a class="btn btn-outline-secondary" asp-action="Index">Скинути</a>
+    </div>
+</form>
+<p class="text-secondary">Знайдено рахунків: @Model.TotalCount</p>
+@if (Model.Balances.Count == 0)
+{
+    <p>Рахунків за обраними умовами не знайдено.</p>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead><tr><th scope="col">Рахунок</th><th scope="col">Платник та приміщення</th><th scope="col">Нараховано, грн</th><th scope="col">Сплачено, грн</th><th scope="col">Борг, грн</th><th scope="col">Аванс, грн</th><th scope="col">Сальдо, грн</th></tr></thead>
+            <tbody>
+            @foreach (var balance in Model.Balances)
+            {
+                <tr>
+                    <td><a asp-controller="Accounts" asp-action="Details" asp-route-id="@balance.AccountId">@balance.AccountNumber</a></td>
+                    <td>@balance.OwnerName<br /><span class="text-secondary">@balance.Address · приміщення @balance.PremiseNumber</span></td>
+                    <td>@balance.TotalCharged.ToString("0.00")</td><td>@balance.TotalPaid.ToString("0.00")</td>
+                    <td>@balance.DebtAmount.ToString("0.00")</td><td>@balance.CreditAmount.ToString("0.00")</td><td>@balance.NetBalance.ToString("0.00")</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+}
+<p class="text-secondary">Сальдо = нараховано − сплачено. Додатне значення означає борг, від’ємне — переплату. Деталізація доступна за номером рахунку.</p>
+@if (Model.TotalPages > 1)
+{
+    <nav class="d-flex gap-3" aria-label="Сторінки балансів">
+        @if (Model.Page > 1)
+        {
+            <a asp-action="Index" asp-route-buildingId="@Model.BuildingId" asp-route-search="@Model.Search" asp-route-page="@(Model.Page - 1)">Назад</a>
+        }
+        <span>Сторінка @Model.Page з @Model.TotalPages</span>
+        @if (Model.Page < Model.TotalPages)
+        {
+            <a asp-action="Index" asp-route-buildingId="@Model.BuildingId" asp-route-search="@Model.Search" asp-route-page="@(Model.Page + 1)">Далі</a>
+        }
+    </nav>
+}

@@ -97,6 +97,8 @@ public abstract class SqlDatabaseTestBase : IAsyncLifetime
         AllowAutoRedirect = false, BaseAddress = new Uri("https://localhost")
     });
 
+    protected IServiceScope Scope() => factory!.Services.CreateScope();
+
     protected async Task AssertFinancialHistoryAsync()
     {
         Assert.Equal(8, await ScalarAsync<int>("SELECT COUNT(*) FROM dbo.Charges WHERE AccountId=1"));
