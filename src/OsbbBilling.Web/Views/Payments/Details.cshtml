@@ -1,0 +1,40 @@
+@model OsbbBilling.Web.Models.Entities.Payment
+@{
+    ViewData["Title"] = "Оплата";
+    var allocated = Model.PaymentAllocations.Sum(x => x.Amount);
+}
+<h1>Оплата № @Model.Reference</h1>
+<dl class="row">
+    <dt class="col-sm-3">Дата оплати</dt><dd class="col-sm-9">@Model.PaymentDate.ToString("dd.MM.yyyy")</dd>
+    <dt class="col-sm-3">Рахунок</dt><dd class="col-sm-9"><a asp-controller="Accounts" asp-action="Details" asp-route-id="@Model.AccountId">@Model.Account.AccountNumber</a></dd>
+    <dt class="col-sm-3">Платник</dt><dd class="col-sm-9">@Model.Account.Owner.FullName</dd>
+    <dt class="col-sm-3">Адреса</dt><dd class="col-sm-9">@Model.Account.Premise.Building.Address · приміщення @Model.Account.Premise.Number</dd>
+    <dt class="col-sm-3">Сума оплати</dt><dd class="col-sm-9">@Model.Amount.ToString("0.00") грн</dd>
+    <dt class="col-sm-3">Зараховано на борг</dt><dd class="col-sm-9">@allocated.ToString("0.00") грн</dd>
+    <dt class="col-sm-3">Нерозподілений залишок</dt><dd class="col-sm-9">@((Model.Amount - allocated).ToString("0.00")) грн</dd>
+    <dt class="col-sm-3">Зареєстрував</dt><dd class="col-sm-9">@Model.CreatedByUser.Login</dd>
+</dl>
+<h2 class="h4">Розподіл оплати</h2>
+@if (Model.PaymentAllocations.Count == 0)
+{
+    <p>Оплата збережена як аванс. Вона буде використана під час наступних нарахувань.</p>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table">
+            <thead><tr><th scope="col">Місяць</th><th scope="col">Послуга</th><th scope="col">Нараховано, грн</th><th scope="col">З цієї оплати, грн</th></tr></thead>
+            <tbody>
+            @foreach (var item in Model.PaymentAllocations.OrderBy(x => x.Charge.Period).ThenBy(x => x.ChargeId))
+            {
+                <tr>
+                    <td><a asp-controller="Charges" asp-action="Details" asp-route-id="@item.ChargeId">@item.Charge.Period.ToString("MM.yyyy")</a></td>
+                    <td>@item.Charge.PremiseService.Service.Name</td><td>@item.Charge.Amount.ToString("0.00")</td><td>@item.Amount.ToString("0.00")</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+}
+<p class="text-secondary">Зареєстрована оплата та її проведені розподіли зберігаються без редагування.</p>
+<a asp-action="Index" asp-route-accountId="@Model.AccountId">До оплат рахунку</a>

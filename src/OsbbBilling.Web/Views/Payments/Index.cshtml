@@ -1,0 +1,79 @@
+@model PaymentListViewModel
+@using OsbbBilling.Web.Security
+@{
+    ViewData["Title"] = "Оплати";
+}
+@if (TempData["Success"] is string message)
+{
+    <div class="alert alert-success" role="status">@message</div>
+}
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
+    <h1 class="mb-0">Оплати</h1>
+    @if (User.IsInRole(Roles.Accountant))
+    {
+        <a class="btn btn-primary" asp-action="Create" asp-route-accountId="@Model.AccountId">Зареєструвати оплату</a>
+    }
+</div>
+<form asp-action="Index" method="get" class="row g-2 mb-3">
+    <div class="col-md-3">
+        <label asp-for="DateFrom" class="form-label">Дата з</label><input asp-for="DateFrom" class="form-control" />
+        <span asp-validation-for="DateFrom" class="text-danger"></span>
+    </div>
+    <div class="col-md-3">
+        <label asp-for="DateTo" class="form-label">Дата до, включно</label><input asp-for="DateTo" class="form-control" />
+        <span asp-validation-for="DateTo" class="text-danger"></span>
+    </div>
+    <div class="col-md-3">
+        <label asp-for="BuildingId" class="form-label">Будинок</label>
+        <select asp-for="BuildingId" asp-items="Model.Buildings" class="form-select"><option value="">Усі будинки</option></select>
+    </div>
+    <div class="col-md-3">
+        <label asp-for="AccountId" class="form-label">Рахунок</label>
+        <select asp-for="AccountId" asp-items="Model.Accounts" class="form-select"><option value="">Усі рахунки</option></select>
+    </div>
+    <div class="col-md-8">
+        <label for="search" class="visually-hidden">Пошук</label>
+        <input id="search" name="search" value="@Model.Search" class="form-control" type="search" placeholder="Номер документа, рахунок або ПІБ" />
+    </div>
+    <div class="col-md-4 d-flex gap-2">
+        <button class="btn btn-outline-primary" type="submit">Знайти</button>
+        <a class="btn btn-outline-secondary" asp-action="Index">Скинути</a>
+    </div>
+</form>
+<p class="text-secondary">Знайдено: @Model.TotalCount · Загальна сума: @Model.TotalAmount.ToString("0.00") грн</p>
+@if (Model.Payments.Count == 0)
+{
+    <p>Оплат за обраними умовами не знайдено.</p>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead><tr><th scope="col">Дата</th><th scope="col">Документ</th><th scope="col">Рахунок</th><th scope="col">Платник</th><th scope="col">Сума, грн</th></tr></thead>
+            <tbody>
+            @foreach (var payment in Model.Payments)
+            {
+                <tr>
+                    <td>@payment.PaymentDate.ToString("dd.MM.yyyy")</td>
+                    <td><a asp-action="Details" asp-route-id="@payment.PaymentId">@payment.Reference</a></td>
+                    <td>@payment.Account.AccountNumber</td><td>@payment.Account.Owner.FullName</td><td>@payment.Amount.ToString("0.00")</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+}
+@if (Model.TotalPages > 1)
+{
+    <nav class="d-flex gap-3" aria-label="Сторінки оплат">
+        @if (Model.Page > 1)
+        {
+            <a asp-action="Index" asp-route-dateFrom="@Model.DateFrom?.ToString("yyyy-MM-dd")" asp-route-dateTo="@Model.DateTo?.ToString("yyyy-MM-dd")" asp-route-accountId="@Model.AccountId" asp-route-buildingId="@Model.BuildingId" asp-route-search="@Model.Search" asp-route-page="@(Model.Page - 1)">Назад</a>
+        }
+        <span>Сторінка @Model.Page з @Model.TotalPages</span>
+        @if (Model.Page < Model.TotalPages)
+        {
+            <a asp-action="Index" asp-route-dateFrom="@Model.DateFrom?.ToString("yyyy-MM-dd")" asp-route-dateTo="@Model.DateTo?.ToString("yyyy-MM-dd")" asp-route-accountId="@Model.AccountId" asp-route-buildingId="@Model.BuildingId" asp-route-search="@Model.Search" asp-route-page="@(Model.Page + 1)">Далі</a>
+        }
+    </nav>
+}
