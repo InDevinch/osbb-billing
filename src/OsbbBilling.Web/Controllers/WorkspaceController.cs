@@ -40,6 +40,7 @@ public class WorkspaceController(OsbbDbContext database) : Controller
             .OrderBy(x => x.AccountNumber)
             .Select(x => new OwnerAccountViewModel
             {
+                AccountId = x.AccountId,
                 AccountNumber = x.AccountNumber,
                 Address = x.Premise.Building.Address,
                 PremiseNumber = x.Premise.Number,

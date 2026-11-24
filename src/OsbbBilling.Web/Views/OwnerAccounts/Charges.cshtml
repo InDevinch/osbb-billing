@@ -1,0 +1,54 @@
+@model OwnerChargeListViewModel
+@{
+    ViewData["Title"] = "Мої нарахування";
+}
+<h1>Нарахування: @Model.Account.AccountNumber</h1>
+<partial name="_OwnerAccountNavigation" model="Model.Account" />
+<form asp-action="Charges" asp-route-id="@Model.Account.AccountId" method="get" class="row g-2 mb-3">
+    <div class="col-sm-6 col-md-4">
+        <label asp-for="Period" class="form-label">Місяць — перше число</label>
+        <input asp-for="Period" class="form-control" />
+        <span asp-validation-for="Period" class="text-danger"></span>
+    </div>
+    <div class="col-sm-6 d-flex align-items-end gap-2">
+        <button class="btn btn-outline-primary" type="submit">Знайти</button>
+        <a class="btn btn-outline-secondary" asp-action="Charges" asp-route-id="@Model.Account.AccountId">Скинути</a>
+    </div>
+</form>
+<p class="text-secondary">Знайдено нарахувань: @Model.TotalCount. Сплачені суми враховують усі проведені оплати.</p>
+@if (Model.Charges.Count == 0)
+{
+    <p>Нарахувань за обраними умовами немає.</p>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table">
+            <thead><tr><th scope="col">Місяць</th><th scope="col">Послуга</th><th scope="col">Кількість</th><th scope="col">Ціна, грн</th><th scope="col">Нараховано, грн</th><th scope="col">Сплачено, грн</th><th scope="col">Борг, грн</th></tr></thead>
+            <tbody>
+            @foreach (var charge in Model.Charges)
+            {
+                <tr>
+                    <td>@charge.Period.ToString("MM.yyyy")</td><td>@charge.ServiceName</td>
+                    <td>@charge.Quantity.ToString("0.###") @charge.Unit</td><td>@charge.UnitPrice.ToString("0.####")</td>
+                    <td>@charge.Amount.ToString("0.00")</td><td>@charge.PaidAmount.ToString("0.00")</td><td>@charge.DebtAmount.ToString("0.00")</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+}
+@if (Model.TotalPages > 1)
+{
+    <nav class="d-flex gap-3" aria-label="Сторінки моїх нарахувань">
+        @if (Model.Page > 1)
+        {
+            <a asp-action="Charges" asp-route-id="@Model.Account.AccountId" asp-route-period="@Model.Period?.ToString("yyyy-MM-dd")" asp-route-page="@(Model.Page - 1)">Назад</a>
+        }
+        <span>Сторінка @Model.Page з @Model.TotalPages</span>
+        @if (Model.Page < Model.TotalPages)
+        {
+            <a asp-action="Charges" asp-route-id="@Model.Account.AccountId" asp-route-period="@Model.Period?.ToString("yyyy-MM-dd")" asp-route-page="@(Model.Page + 1)">Далі</a>
+        }
+    </nav>
+}

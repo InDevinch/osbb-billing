@@ -1,0 +1,56 @@
+@model OwnerPaymentListViewModel
+@{
+    ViewData["Title"] = "Мої оплати";
+}
+<h1>Оплати: @Model.Account.AccountNumber</h1>
+<partial name="_OwnerAccountNavigation" model="Model.Account" />
+<form asp-action="Payments" asp-route-id="@Model.Account.AccountId" method="get" class="row g-2 mb-3">
+    <div class="col-sm-4">
+        <label asp-for="DateFrom" class="form-label">Дата з</label><input asp-for="DateFrom" class="form-control" />
+        <span asp-validation-for="DateFrom" class="text-danger"></span>
+    </div>
+    <div class="col-sm-4">
+        <label asp-for="DateTo" class="form-label">Дата до, включно</label><input asp-for="DateTo" class="form-control" />
+        <span asp-validation-for="DateTo" class="text-danger"></span>
+    </div>
+    <div class="col-sm-4 d-flex align-items-end gap-2">
+        <button class="btn btn-outline-primary" type="submit">Знайти</button>
+        <a class="btn btn-outline-secondary" asp-action="Payments" asp-route-id="@Model.Account.AccountId">Скинути</a>
+    </div>
+</form>
+<p class="text-secondary">Знайдено оплат: @Model.TotalCount. Розподіл і залишок показано на поточний момент.</p>
+@if (Model.Payments.Count == 0)
+{
+    <p>Оплат за обраними умовами немає.</p>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table">
+            <thead><tr><th scope="col">Дата</th><th scope="col">Документ</th><th scope="col">Сума, грн</th><th scope="col">Зараховано на борг, грн</th><th scope="col">Залишок авансу, грн</th></tr></thead>
+            <tbody>
+            @foreach (var payment in Model.Payments)
+            {
+                <tr>
+                    <td>@payment.PaymentDate.ToString("dd.MM.yyyy")</td><td>@payment.Reference</td>
+                    <td>@payment.Amount.ToString("0.00")</td><td>@payment.AllocatedAmount.ToString("0.00")</td><td>@payment.CreditAmount.ToString("0.00")</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+}
+@if (Model.TotalPages > 1)
+{
+    <nav class="d-flex gap-3" aria-label="Сторінки моїх оплат">
+        @if (Model.Page > 1)
+        {
+            <a asp-action="Payments" asp-route-id="@Model.Account.AccountId" asp-route-dateFrom="@Model.DateFrom?.ToString("yyyy-MM-dd")" asp-route-dateTo="@Model.DateTo?.ToString("yyyy-MM-dd")" asp-route-page="@(Model.Page - 1)">Назад</a>
+        }
+        <span>Сторінка @Model.Page з @Model.TotalPages</span>
+        @if (Model.Page < Model.TotalPages)
+        {
+            <a asp-action="Payments" asp-route-id="@Model.Account.AccountId" asp-route-dateFrom="@Model.DateFrom?.ToString("yyyy-MM-dd")" asp-route-dateTo="@Model.DateTo?.ToString("yyyy-MM-dd")" asp-route-page="@(Model.Page + 1)">Далі</a>
+        }
+    </nav>
+}

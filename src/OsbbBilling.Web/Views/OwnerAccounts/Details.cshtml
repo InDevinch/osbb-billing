@@ -1,0 +1,14 @@
+@model OwnerAccountDetailsViewModel
+@{
+    ViewData["Title"] = "Мій рахунок " + Model.Account.AccountNumber;
+}
+<h1>Мій рахунок @Model.Account.AccountNumber</h1>
+<partial name="_OwnerAccountNavigation" model="Model.Account" />
+<dl class="row">
+    <dt class="col-sm-3">Платник</dt><dd class="col-sm-9">@Model.Balance.OwnerName</dd>
+    <dt class="col-sm-3">Адреса</dt><dd class="col-sm-9">@Model.Account.Address · приміщення @Model.Account.PremiseNumber</dd>
+    <dt class="col-sm-3">Діє з</dt><dd class="col-sm-9">@Model.Account.ValidFrom.ToString("dd.MM.yyyy")</dd>
+    <dt class="col-sm-3">Діє до, не включно</dt><dd class="col-sm-9">@(Model.Account.ValidTo?.ToString("dd.MM.yyyy") ?? "Не визначено")</dd>
+</dl>
+<partial name="_AccountBalance" model="Model.Balance" />
+<p class="text-secondary">Від’ємне сальдо означає переплату. Нарахування й оплати вносить бухгалтер ОСББ.</p>

@@ -1,0 +1,8 @@
+@model OwnerAccountViewModel
+<nav class="d-flex flex-wrap gap-3 mb-4" aria-label="Розділи мого рахунку">
+    <a asp-controller="Workspace" asp-action="Owner">Мої рахунки</a>
+    <a asp-controller="OwnerAccounts" asp-action="Details" asp-route-id="@Model.AccountId">Баланс рахунку</a>
+    <a asp-controller="OwnerAccounts" asp-action="Charges" asp-route-id="@Model.AccountId">Нарахування</a>
+    <a asp-controller="OwnerAccounts" asp-action="Payments" asp-route-id="@Model.AccountId">Оплати</a>
+    <a asp-controller="OwnerAccounts" asp-action="Readings" asp-route-id="@Model.AccountId">Показання</a>
+</nav>

@@ -16,7 +16,7 @@ else
             @foreach (var account in Model)
             {
                 <tr>
-                    <td>@account.AccountNumber</td>
+                    <td><a asp-controller="OwnerAccounts" asp-action="Details" asp-route-id="@account.AccountId">@account.AccountNumber</a></td>
                     <td>@account.Address</td>
                     <td>@account.PremiseNumber</td>
                     <td>@account.ValidFrom.ToString("dd.MM.yyyy")</td>

@@ -1,0 +1,53 @@
+@model OwnerReadingListViewModel
+@{
+    ViewData["Title"] = "Мої показання";
+}
+<h1>Показання: @Model.Account.AccountNumber</h1>
+<partial name="_OwnerAccountNavigation" model="Model.Account" />
+<p class="text-secondary">Показання лічильників приміщення лише за місяці дії цього рахунку.</p>
+<form asp-action="Readings" asp-route-id="@Model.Account.AccountId" method="get" class="row g-2 mb-3">
+    <div class="col-sm-6 col-md-4">
+        <label asp-for="Period" class="form-label">Місяць — перше число</label><input asp-for="Period" class="form-control" />
+        <span asp-validation-for="Period" class="text-danger"></span>
+    </div>
+    <div class="col-sm-6 d-flex align-items-end gap-2">
+        <button class="btn btn-outline-primary" type="submit">Знайти</button>
+        <a class="btn btn-outline-secondary" asp-action="Readings" asp-route-id="@Model.Account.AccountId">Скинути</a>
+    </div>
+</form>
+<p class="text-secondary">Знайдено показань: @Model.TotalCount</p>
+@if (Model.Readings.Count == 0)
+{
+    <p>Показань за обраними умовами немає.</p>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table">
+            <thead><tr><th scope="col">Місяць</th><th scope="col">Послуга</th><th scope="col">Лічильник</th><th scope="col">Дата зняття</th><th scope="col">Показання</th></tr></thead>
+            <tbody>
+            @foreach (var reading in Model.Readings)
+            {
+                <tr>
+                    <td>@reading.Period.ToString("MM.yyyy")</td><td>@reading.ServiceName</td><td>@reading.SerialNumber</td>
+                    <td>@reading.ReadingDate.ToString("dd.MM.yyyy")</td><td>@reading.ReadingValue.ToString("0.###") @reading.Unit</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+}
+@if (Model.TotalPages > 1)
+{
+    <nav class="d-flex gap-3" aria-label="Сторінки моїх показань">
+        @if (Model.Page > 1)
+        {
+            <a asp-action="Readings" asp-route-id="@Model.Account.AccountId" asp-route-period="@Model.Period?.ToString("yyyy-MM-dd")" asp-route-page="@(Model.Page - 1)">Назад</a>
+        }
+        <span>Сторінка @Model.Page з @Model.TotalPages</span>
+        @if (Model.Page < Model.TotalPages)
+        {
+            <a asp-action="Readings" asp-route-id="@Model.Account.AccountId" asp-route-period="@Model.Period?.ToString("yyyy-MM-dd")" asp-route-page="@(Model.Page + 1)">Далі</a>
+        }
+    </nav>
+}
