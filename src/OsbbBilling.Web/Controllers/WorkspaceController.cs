@@ -5,10 +5,11 @@ using Microsoft.EntityFrameworkCore;
 using OsbbBilling.Web.Data;
 using OsbbBilling.Web.Models;
 using OsbbBilling.Web.Security;
+using OsbbBilling.Web.Services;
 
 namespace OsbbBilling.Web.Controllers;
 
-public class WorkspaceController(OsbbDbContext database) : Controller
+public class WorkspaceController(OsbbDbContext database, FinancialOverviewService overview) : Controller
 {
     public IActionResult Index()
     {
@@ -26,7 +27,8 @@ public class WorkspaceController(OsbbDbContext database) : Controller
     public IActionResult Accountant() => View("Staff");
 
     [Authorize(Roles = Roles.Chairperson)]
-    public IActionResult Chairperson() => View("Staff");
+    public async Task<IActionResult> Chairperson(CancellationToken cancellationToken) =>
+        View("~/Views/Overview/Index.cshtml", await overview.GetAsync(null, cancellationToken));
 
     [Authorize(Roles = Roles.Owner)]
     public async Task<IActionResult> Owner(CancellationToken cancellationToken)

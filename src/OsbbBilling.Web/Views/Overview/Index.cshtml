@@ -1,0 +1,30 @@
+@model FinancialOverviewViewModel
+@{
+    ViewData["Title"] = "Фінансовий огляд";
+}
+<h1>Фінансовий огляд ОСББ</h1>
+<p class="text-secondary">Поточні підсумки за весь період обліку, включаючи завершені рахунки. Борги та аванси різних рахунків обліковуються окремо.</p>
+<form asp-controller="Overview" asp-action="Index" method="get" class="row g-2 mb-4">
+    <div class="col-md-6">
+        <label asp-for="BuildingId" class="form-label">Будинок</label>
+        <select asp-for="BuildingId" asp-items="Model.Buildings" class="form-select"><option value="">Усі будинки</option></select>
+    </div>
+    <div class="col-md-6 d-flex align-items-end gap-2">
+        <button class="btn btn-outline-primary" type="submit">Показати</button>
+        <a class="btn btn-outline-secondary" asp-controller="Overview" asp-action="Index">Скинути</a>
+    </div>
+</form>
+<dl class="row">
+    <dt class="col-sm-4">Нараховано</dt><dd class="col-sm-8">@Model.TotalCharged.ToString("0.00") грн</dd>
+    <dt class="col-sm-4">Сплачено</dt><dd class="col-sm-8">@Model.TotalPaid.ToString("0.00") грн</dd>
+    <dt class="col-sm-4">Загальний борг</dt><dd class="col-sm-8">@Model.TotalDebt.ToString("0.00") грн</dd>
+    <dt class="col-sm-4">Аванси</dt><dd class="col-sm-8">@Model.TotalCredit.ToString("0.00") грн</dd>
+    <dt class="col-sm-4">Особових рахунків</dt><dd class="col-sm-8">@Model.AccountCount</dd>
+    <dt class="col-sm-4">Рахунків із боргом</dt><dd class="col-sm-8">@Model.DebtorCount</dd>
+    <dt class="col-sm-4">Рахунків з авансом</dt><dd class="col-sm-8">@Model.CreditAccountCount</dd>
+</dl>
+<div class="d-flex flex-wrap gap-2">
+    <a class="btn btn-primary" asp-controller="Overview" asp-action="Debtors" asp-route-buildingId="@Model.BuildingId">Переглянути боржників</a>
+    <a class="btn btn-outline-primary" asp-controller="Balances" asp-action="Index" asp-route-buildingId="@Model.BuildingId">Баланси рахунків</a>
+    <a class="btn btn-outline-primary" asp-controller="Accounts" asp-action="Index">Особові рахунки</a>
+</div>

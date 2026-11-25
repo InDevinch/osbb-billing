@@ -6,6 +6,8 @@
 }
 <h1>Кабінет: @roleName</h1>
 <p>Ви увійшли як <strong>@User.Identity?.Name</strong>.</p>
+<a class="btn btn-primary" asp-controller="Overview" asp-action="Index">Фінансовий огляд</a>
+<a class="btn btn-primary" asp-controller="Overview" asp-action="Debtors">Боржники</a>
 <a class="btn btn-primary" asp-controller="Owners" asp-action="Index">Власники</a>
 <a class="btn btn-primary" asp-controller="Buildings" asp-action="Index">Будинки</a>
 <a class="btn btn-primary" asp-controller="Premises" asp-action="Index">Приміщення</a>

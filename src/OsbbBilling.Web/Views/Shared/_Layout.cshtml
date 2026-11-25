@@ -28,6 +28,8 @@
                     <a asp-controller="Charges" asp-action="Index">Нарахування</a>
                     <a asp-controller="Payments" asp-action="Index">Оплати</a>
                     <a asp-controller="Balances" asp-action="Index">Баланси</a>
+                    <a asp-controller="Overview" asp-action="Index">Огляд</a>
+                    <a asp-controller="Overview" asp-action="Debtors">Боржники</a>
                 }
                 @if (Environment.IsDevelopment() && User.IsInRole(Roles.Accountant))
                 {
